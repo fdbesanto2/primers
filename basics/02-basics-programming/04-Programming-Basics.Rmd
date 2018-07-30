@@ -298,7 +298,7 @@ If your vector contains a sequence of contiguous integers, you can create it wit
 
 ### []
 
-You can extract any element of a vector by placinga pair of brackets behind the vector. Inside the brackets place the number of the element that you'd like to extract. For example, `vec[3]` would return the third element of the vector named `vec`.
+You can extract any element of a vector by placing pair of brackets behind the vector. Inside the brackets place the number of the element that you'd like to extract. For example, `vec[3]` would return the third element of the vector named `vec`.
 
 Use the chunk below to extract the fourth element of `vec`.
 
@@ -557,7 +557,7 @@ question(
 
 ### Load a package
 
-In the code chunk below, load the __tidyverse__ package. Whenever you load a package R will also load all of the packages that the first package depends on. __tidyverse__ takes advantage of this to create a shortcut for laoding several common packages at once. Whenever you load __tidyverse__, __tidyverse__ also loads __ggplot2__, __dplyr__, __tibble__, __tidyr__, __readr__, and __purrr__.
+In the code chunk below, load the __tidyverse__ package. Whenever you load a package R will also load all of the packages that the first package depends on. __tidyverse__ takes advantage of this to create a shortcut for loading several common packages at once. Whenever you load __tidyverse__, __tidyverse__ also loads __ggplot2__, __dplyr__, __tibble__, __tidyr__, __readr__, and __purrr__.
 
 ```{r packages2, exercise = TRUE}
 

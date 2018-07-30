@@ -1,8 +1,6 @@
 ---
 title: "Working with Tibbles"
-tutorial:
-  id: "io.shinyapps.tutorials.01-tibbles"
-  version: 0.01
+author: Adapter by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
 output: 
   learnr::tutorial:
     progressive: true
@@ -15,9 +13,15 @@ runtime: shiny_prerendered
 library(learnr)
 library(tidyverse)
 
-checker <- function(label, user_code, check_code, envir_result, evaluate_result, ...) {
+checker <- function(label,
+                    user_code,
+                    check_code,
+                    envir_result,
+                    evaluate_result,
+                    ...) {
   list(message = check_code, correct = TRUE, location = "append")
 }
+
 tutorial_options(exercise.timelimit = 60, exercise.checker = checker)
 knitr::opts_chunk$set(echo = FALSE)
 ```

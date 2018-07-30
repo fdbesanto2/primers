@@ -1,8 +1,6 @@
 ---
 title: "Isolating Data with dplyr"
-tutorial:
-  id: "io.shinyapps.tutorials.02-isolating"
-  version: 0.01
+author: Adapter by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
 output: 
   learnr::tutorial:
     progressive: true
@@ -14,26 +12,43 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
+# TODO: Remove
 library(babynames)
+library(fgeo.data)
 
-checker <- function(label, user_code, check_code, envir_result, evaluate_result, ...) {
-  list(message = check_code, correct = TRUE, location = "append")
+checker <- function(label,
+                    user_code,
+                    check_code,
+                    envir_result,
+                    evaluate_result,
+                    ...) {
+  list(message = check_code,
+  correct = TRUE,
+  location = "append")
 }
+
 tutorial_options(exercise.timelimit = 60, exercise.checker = checker)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Welcome
 
-In this case study, you will explore the popularity of your own name over time. Along the way, you will master some of the most useful functions for isolating variables, cases, and values within a data frame:
+In this case study, you will explore the abundance of tree-stems of different species over time. Along the way, you will master some of the most useful functions for isolating variables, cases, and values within a data frame:
 
-* `select()` and `filter()`, which let you extract rows and columns from a data frame
-* `arrange()`, which lets yuo reorder the rows in your data
-* `%>%`, which organizes your code into reader-friendly "pipes"
+* `select()` and `filter()`, which let you extract rows and columns from a data frame.
+* `arrange()`, which lets yuo reorder the rows in your data.
+* `%>%`, which organizes your code into reader-friendly "pipes".
 
-This tutorial uses the [core tidyverse packages](http://tidyverse.org/), including ggplot2, tibble, and dplyr, as well as the `babynames` package. All of these packages have been pre-installed and pre-loaded for your convenience.
+This tutorial uses the [core tidyverse packages](http://tidyverse.org/), including __ggplot2__, __tibble__, and __dplyr__, as well as the __fgeo.data__ package. All of these packages have been pre-installed and pre-loaded for your convenience.
 
 Click the Next Topic button to begin.
+
+
+
+
+
+
+TODO
 
 ## Your name
 
@@ -44,14 +59,35 @@ library(tidyverse)
 
 ### The history of your name
 
-You can use the data in `babynames` to make graphs like this, which reveal the history of a name, perhaps your name.
+You can use the data in `luquillo_stem_random` to make graphs like this, which reveal the history of a tree-stem species.
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, out.width = "90%"}
+stem_count <- luquillo_stem_random %>% 
+  filter(status != "D") %>% 
+  add_count(CensusID, sp) %>% 
+  mutate(
+    n_tot = nrow(.),
+    prop = n / n_tot
+  ) %>% 
+  select(CensusID, sp, n, prop) %>% 
+  unique() %>% 
+  arrange(CensusID, desc(n))
+  
+  
+  stem_count %>% 
+  ggplot() +
+    geom_line(aes(x = year, y = prop)) +
+    labs(title = "Popularity of the name Garrett")
+
 babynames %>% 
   filter(name == "Garrett", sex == "M") %>% 
   ggplot() +
     geom_line(aes(x = year, y = prop)) +
     labs(title = "Popularity of the name Garrett")
+
+
+
+
 ```
 
 But before you do, you will need to trim down `babynames`. At the moment, there are more rows in `babynames` than you need to build your plot. 

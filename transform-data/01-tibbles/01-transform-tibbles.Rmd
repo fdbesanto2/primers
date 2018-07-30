@@ -1,0 +1,242 @@
+---
+title: "Working with Tibbles"
+author: Adapter by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+
+checker <- function(label,
+                    user_code,
+                    check_code,
+                    envir_result,
+                    evaluate_result,
+                    ...) {
+  list(message = check_code, correct = TRUE, location = "append")
+}
+
+tutorial_options(exercise.timelimit = 60, exercise.checker = checker)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Welcome
+
+In this primer, you will explore the abundance of different species of tree-stems in a tropical forest plot over time. To succeed, you will need to master some common tools for manipulating data with R:
+
+* Tibbles and `View()`, which let you inspect raw data.
+* `select()` and `filter()`, which let you extract rows and columns from a data frame.
+* `arrange()`, which lets you reorder the rows in your data.
+* `%>%`, which organizes your code into reader-friendly "pipes".
+* `mutate()`, `group_by()`, and `summarize()`, which help you use your data to compute new variables and summary statistics.
+
+These are some of the most useful R functions for data science, and the tutorials that follow will provide you everything you need to learn them. 
+
+In the tutorials, we'll use a dataset named `luquillo_stem_random`, which comes in the package __fgeo.data__. Within `luquillo_stem_random`, you will find information about a subset of randomly selected trees recorded in census 5 of the forest plot Luquillo, in Puerto Rico.
+
+This tutorial introduces `luquillo_stem_random` as well as a new data structure that makes working with data in R easy: the tibble.
+
+In addition to __fgeo.data__, this tutorial uses the [core tidyverse packages](http://tidyverse.org/), including __ggplot2__, __tibble__, and __dplyr__. All of these packages have been pre-installed for your convenience. But they haven't been pre-loaded---something you will soon learn more about!
+
+Click the Next Topic button to begin.
+
+## fgeo.data
+
+### Loading fgeo.data
+
+Before we begin, let's learn a little about our data. The `luquillo_stem_random` dataset comes in the **fgeo.data** package. The package is pre-installed for you, just as __ggplot2__ was pre-installed in the last tutorial. But unlike in the last tutorial, I have not pre-_loaded_ __fgeo.data__, or any other package.
+
+What does this mean? In R, whenever you want to use a package that is not part of base R, you need to load the package with the command `library()`. Until you load a package, R will not be able to find the datasets and functions contained in the package. For example, if we asked R to display the `luquillo_stem_random` dataset, which comes in the __fgeo.data__ package, right now, we'd get the message below. R cannot find the dataset because we haven't loaded the __fgeo.data__ package.
+
+```{r error = TRUE}
+luquillo_stem_random
+```
+
+To load the __fgeo.data__ package, you would run the command `library(fgeo.data)`. After you load a package, R will be able to find its contents _until you close R_. The next time you open R, you will need to reload the package if you wish to use it again.
+
+This might sound like an inconvenience, but choosing which packages to load keeps your R experience simple and orderly.
+
+In the chunk below, load __fgeo.data__ (the package) and then open the help page for `luquillo_stem_random` (the data set). Be sure to read the help page before going on.
+
+```{r babynames-1, exercise = TRUE, exercise.setup = "bnames"}
+
+```
+
+```{r babynames-1-solution}
+library(fgeo.data)
+?luquillo_stem_random
+```
+
+```{r bnames, echo = FALSE, message = FALSE}
+library(fgeo.data)
+```
+
+### The data
+
+Now that you know a little about the dataset, let's examine its contents. If you were to run `luquillo_stem_random` at your R console, you would get output that looks like this:
+
+```{r echo = TRUE, eval = FALSE}
+luquillo_stem_random
+
+#> 40    82.0  1.3 1.30      8622   alive       MAIN;A    1      A   NA
+#> 41    39.0  1.3 1.30      8622   alive       MAIN;A    1      A   NA
+#> 42   164.0  1.3 1.30      7861   alive       MAIN;A    1      A   NA
+#> 43   130.0  1.4 1.42      7861   alive       MAIN;A    1      A   NA
+#> 44    21.6  1.3 1.30      8623   alive       MAIN;A    1      A   NA
+#> 45   111.0 1.35 1.33      7862   alive       MAIN;A    1      A   NA
+#> 46    10.0  1.3 1.30      8623   alive       MAIN;A    1      A   NA
+#> 47    71.4  1.3 1.30      8623   alive       MAIN;A    1      A   NA
+#> 48    90.9  1.3 1.30      8623   alive       MAIN;A    1      A   NA
+#> 49    21.0  1.3 1.30      8623   alive       MAIN;A    1      A   NA
+#> 50    57.0  1.3 1.30      8624   alive       MAIN;A    1      A   NA
+#> 51   160.0  1.3 1.30      7872   alive       MAIN;A    1      A   NA
+#> 52    14.6  1.3 1.30      8623   alive       MAIN;A    1      A   NA
+#> [ reached getOption("max.print") -- omitted 7892 rows ]
+```
+
+Yikes. What is happening?
+
+### Displaying large data
+
+`luquillo_stem_random` is a large dataframe, and R is not well equipped to display the contents of large data frames. R shows as many rows as possible before your memory buffer is overwhelmed. At that point, R stops, leaving you to look at an arbitrary section of your data.
+
+You can avoid this behavior by transforming your data frame to a _tibble_. 
+
+## tibbles
+
+### What is a tibble?
+
+A tibble is a special type of table. R displays tibbles in a refined way whenever you have the **tibble** package loaded: R will print only the first ten rows of a tibble as well as all of the columns that fit into your console window. R also adds useful summary information about the tibble, such as the data types of each column and the size of the data set. 
+
+Whenever you do not have the tibble packages loaded, R will display the tibble as if it were a dataframe. In fact, tibbles _are_ dataframes, an enhanced type of dataframe.
+
+You can think of the difference between the data frame display and the tibble display like this:
+
+```{r out.width = "75%"}
+knitr::include_graphics("www/images/tibble_display.png")
+```
+
+### as_tibble()
+
+You can transform a dataframe to a tibble with the `as_tibble()` function in the __tibble__ package, e.g. `as_tibble(cars)`. However, `luquillo_stem_random` is already a tibble. To display it nicely, you just need to load the __tibble__ package. 
+
+To see what I mean, use `library()` to load the __tibble__ package in the chunk below and then call `luquillo_stem_random`.
+
+```{r babynames-3, exercise = TRUE, exercise.setup = "bnames"}
+
+```
+
+```{r babynames-3-solution}
+library(tibble)
+luquillo_stem_random
+```
+
+```{r echo = FALSE, message = FALSE}
+library(tibble)
+```
+
+You do not need to worry much about tibbles in these tutorials; in future tutorials, I'll automatically convert each data frame into an interactive table. However, you should consider making tibbles an important part of your work in R.
+
+### View()
+
+What if you'd like to inspect the remaining portions of a tibble? To see the entire tibble, use the `View()` command. R will launch a window that shows a scroll-able display of the entire data set. Try this below, run `View(luquillo_stem_random)` to see the entire data set.
+
+```{r babynames-4, exercise = TRUE, exercise.setup = "bnames"}
+
+```
+
+```{r babynames-4-solution}
+View(luquillo_stem_random)
+```
+
+```{r babynames-4-check}
+"Good job! If you got an error message, it is only because the viewer is a work in progress for tutorials."
+```
+
+## tidyverse
+
+### The tidyverse
+
+The __tibble__ package is one of several packages that are known collectively as ["the __tidyverse__"](http://tidyverse.org). Tidyverse packages share a common philosophy and are designed to work well together. For example, in this tutorial you will use the **tibble** package, the **ggplot2** package, and the **dplyr** package, all of which belong to the tidyverse.
+
+### The tidyverse package
+
+When you use tidyverse packages, you can make your life easier by using the **tidyverse** package. This package provides a shortcut for installing and loading the entire suite of packages in "the tidyverse", e.g. 
+
+```{r eval = FALSE}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+### Installing the tidyverse
+
+Think of the **tidyverse** package as a placeholder for the packages that are in the "tidyverse". By itself, __tidyverse__ does not do much, but when you install the __tidyverse__ package it instructs R to install every other package in the tidyverse at the same time. In other words, when you run `install.packages("tidyverse")`, R installs the following packages for you in one simple step:
+
+* __ggplot2__.
+* __dplyr__.
+* __tidyr__.
+* __readr__.
+* __purrr__.
+* __tibble__.
+* __hms__.
+* __stringr__.
+* __lubridate__.
+* __forcats__.
+* __DBI__.
+* __haven__.
+* __jsonlite__.
+* __readxl__.
+* __rvest__.
+* __xml2__.
+* __modelr__.
+* __broom__.
+
+### loading the tidyverse
+
+When you load __tidyverse__ with `library("tidyverse")`, it instructs R to load _the most commonly used_ tidyverse packages. These are:
+
+* __ggplot2__
+* __dplyr__
+* __tidyr__
+* __readr__
+* __purrr__
+* __tibble__
+
+You can load the less commonly used tidyverse packages in the normal way, by running `library(<PACKAGE NAME>)` for each of them.
+
+Let's give this a try. We will use the __ggplot2__ and __dplyr__ packages later in this tutorial. Let's use the __tidyverse__ package to load them in the chunk below:
+
+```{r babyname-5, exercise = TRUE, exercise.setup = "bnames"}
+
+```
+
+```{r babyname-5-solution}
+library("tidyverse")
+```
+
+### Quiz
+
+```{r babynames-6, echo = FALSE}
+question('Which package is not loaded by `library("tidyverse")`',
+  answer("ggplot2"),
+  answer("dplyr"),
+  answer("tibble"),
+  answer(
+    "babynames", 
+    correct = TRUE, 
+    message = "Now that you are familiar with the data set, and have loaded the necessary packages, let's explore the data."
+  ),
+  allow_retry = TRUE
+)
+```
+
+### Recap
+
+Tibbles and the __tidyverse__ package are two tools that make life with R easier. Ironically, you may not come to appreciate their value right away: these tutorials pre-load packages for you, and they wrap dataframes into an interactive table for display (at least the tutorials in the primers that follow will). However, you will want to utilize tibbles and the __tidyverse__ package when you move out of the tutorials and begin doing your own work with R inside of the RStudio IDE.
+
+This tutorial also introduced the `luquillo_stem_random` dataset. In the next tutorial, you will use this data set to plot the abundance of tree-stem species over time. Along the way, you will learn how to filter and subset data sets in R.

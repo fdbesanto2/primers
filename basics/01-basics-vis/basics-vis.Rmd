@@ -9,12 +9,20 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(learnr)
-library(tidyverse)
+library(ggplot2)
 library(fgeo.data)
 
-checker <- function(label, user_code, check_code, envir_result, evaluate_result, ...) {
-  list(message = check_code, correct = TRUE, location = "append")
+checker <- function(label,
+                    user_code,
+                    check_code,
+                    envir_result,
+                    evaluate_result,
+                    ...) {
+  list(message = check_code,
+  correct = TRUE,
+  location = "append")
 }
+
 tutorial_options(exercise.timelimit = 60, exercise.checker = checker)
 ```
 
@@ -22,9 +30,9 @@ tutorial_options(exercise.timelimit = 60, exercise.checker = checker)
 
 Data visualization is one of the most important tools for data science. It is also a great way to start learning R; when you visualize data, you get an immediate payoff that will keep you motivated as you push through the initial frustrations of learning a language.
 
-This tutorial will teach you how to begin visualizing data with ggplot2, which is one of the most popular packages in R for visualizing data. The tutorial focuses on three essential skills:
+This tutorial will teach you how to begin visualizing data with __ggplot2__, which is one of the most popular packages in R for visualizing data. The tutorial focuses on three essential skills:
 
-1. How to create graphs with a reusable ggplot2 **template**
+1. How to create graphs with a reusable __ggplot2__ **template**
 1. How to add variables to a graph with **aesthetics**
 1. How to select the "type" of your graph with **geoms** 
 
@@ -135,7 +143,7 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r template-check}
-"Good job! This plot uses boxplots to compare the diameter of different tree species. ggplot2 comes with many geom functions that each add a different type of layer to a plot. You'll learn more about boxplots and other geoms in the tutorials that follow."
+"Good job! This plot uses boxplots to compare the diameter of different tree species. __ggplot2__ comes with many geom functions that each add a different type of layer to a plot. You'll learn more about boxplots and other geoms in the tutorials that follow."
 ```
 
 ### Common problems
@@ -146,7 +154,7 @@ Start by carefully comparing the code that you're running to the code in the exa
 
 ### + location
 
-One common problem when creating ggplot2 graphics is to put the `+` in the wrong place: it has to come at the end of a line, not the start. In other words, make sure you haven't accidentally written code like this:
+One common problem when creating __ggplot2__ graphics is to put the `+` in the wrong place: it has to come at the end of a line, not the start. In other words, make sure you haven't accidentally written code like this:
 
 ```R
 ggplot(data = luquillo_tree5_random)
@@ -252,7 +260,7 @@ This isn't the only insight we've gleaned; you've also learned how to add new ae
 
 ### Aesthetic mappings
 
-To map an aesthetic to a variable, set the name of the aesthetic equal to the name of the variable, and do this inside `mapping = aes()`. ggplot2 will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable. __ggplot2__ will also add a legend that explains which levels correspond to which values.
+To map an aesthetic to a variable, set the name of the aesthetic equal to the name of the variable, and do this inside `mapping = aes()`. __ggplot2__ will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable. __ggplot2__ will also add a legend that explains which levels correspond to which values.
 
 This insight gives us a new way to think about the mapping argument. Mappings tell __ggplot2__ more than which variables to put on which axes, they tell __ggplot2__ which variables to map to which visual properties. The x and y locations of each point are just two of the many visual properties displayed by a point.
 
@@ -277,7 +285,7 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r size-check}
-"Great Job! Now the size of a point represents its status. Did you notice the warning message? ggplot2 gives us a warning here because mapping an unordered variable (status) to an ordered aesthetic (size) is not a good idea."
+"Great Job! Now the size of a point represents its status. Did you notice the warning message? __ggplot2__ gives us a warning here because mapping an unordered variable (status) to an ordered aesthetic (size) is not a good idea."
 ```
 
 ### alpha
@@ -321,7 +329,7 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r shape-check}
-"Good work! What happened to the SUVs? ggplot2 will only use six shapes at a time. By default, additional groups will go unplotted when you use the shape aesthetic. So only use it when you have fewer than seven groups."
+"Good work! What happened to the SUVs? __ggplot2__ will only use six shapes at a time. By default, additional groups will go unplotted when you use the shape aesthetic. So only use it when you have fewer than seven groups."
 ```
 
 ### Exercise 1
@@ -343,7 +351,7 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r cty-check}
-"Very nice! ggplot2 treats continuous and categorical variables differently. Noteably, ggplot2 supplies a blue gradient when you map a continuous variable to color, and ggplot2 will not map continuous variables to shape."
+"Very nice! __ggplot2__ treats continuous and categorical variables differently. Noteably, __ggplot2__ supplies a blue gradient when you map a continuous variable to color, and __ggplot2__ will not map continuous variables to shape."
 ```
     
 ### Exercise 2
@@ -356,7 +364,7 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r multiple-check}
-"Very nice! ggplot2 can map the same variable to multiple aesthetics."
+"Very nice! __ggplot2__ can map the same variable to multiple aesthetics."
 ```
     
 <div id="multiple-hint">
@@ -373,7 +381,7 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r nonvar-check}
-"Good job! ggplot2 will map the aesthetic to the results of the expression. Here, ggplot2 mapped the color of each point to TRUE or FALSE based on whether the point's `dbh` value was less than 15."
+"Good job! __ggplot2__ will map the aesthetic to the results of the expression. Here, __ggplot2__ mapped the color of each point to TRUE or FALSE based on whether the point's `dbh` value was less than 15."
 ```
 
 ### Setting aesthetics
@@ -394,7 +402,7 @@ ggplot(data = luquillo_tree5_random) +
 
 ### Setting vs. Mapping
 
-Setting works for every aesthetic in ggplot2. If you want to manually set the aesthetic to a **value** in the visual space, set the aesthetic outside of `aes()`. 
+Setting works for every aesthetic in __ggplot2__. If you want to manually set the aesthetic to a **value** in the visual space, set the aesthetic outside of `aes()`. 
 
 ```{r setting2, exercise = TRUE}
 ggplot(data = luquillo_tree5_random) + 
@@ -423,14 +431,14 @@ ggplot(data = luquillo_tree5_random) +
 ```
 
 ```{r e4-check}
-"Good job! Putting an aesthetic in the wrong location is one of the most common graphing errors. Sometimes it helps to think of legends. If you will need a legend to understand what the color/shape/etc. means, then you should probably put the aesthetic inside `aes()` --- ggplot2 will build a legend for every aesthetic mapped here. If the aesthetic has no meaning and is just... well, aesthetic, then set it outside of `aes()`."
+"Good job! Putting an aesthetic in the wrong location is one of the most common graphing errors. Sometimes it helps to think of legends. If you will need a legend to understand what the color/shape/etc. means, then you should probably put the aesthetic inside `aes()` --- __ggplot2__ will build a legend for every aesthetic mapped here. If the aesthetic has no meaning and is just... well, aesthetic, then set it outside of `aes()`."
 ```
 
 ### Recap
 
 For each aesthetic, you associate the name of the aesthetic with a variable to display, and you do this within `aes()`. 
 
-Once you map a variable to an aesthetic, ggplot2 takes care of the rest. It selects a reasonable scale to use with the aesthetic, and it constructs a legend that explains the mapping between levels and values. For x and y aesthetics, ggplot2 does not create a legend, but it creates an axis line with tick marks and a label. The axis line acts as a legend; it explains the mapping between locations and values.
+Once you map a variable to an aesthetic, __ggplot2__ takes care of the rest. It selects a reasonable scale to use with the aesthetic, and it constructs a legend that explains the mapping between levels and values. For x and y aesthetics, __ggplot2__ does not create a legend, but it creates an axis line with tick marks and a label. The axis line acts as a legend; it explains the mapping between locations and values.
 
 You've experimented with the most common aesthetics for points: `x`, `y`, `color`, `size`, `alpha` and `shape`. Each geom uses its own set of aesthetics (you wouldn't expect a line to have a shape, for example). To find out which aesthetics a geom uses, open its help page, e.g. `?geom_line`.
 
@@ -505,7 +513,7 @@ question(
 
 The ideas that you've learned here: geoms, aesthetics, and the implied existence of a data space and a visual space combine to form a system known as the Grammar of Graphics.
 
-The Grammar of Graphics provides a systematic way to build any graph, and it underlies the ggplot2 package. In fact, the first two letters of __ggplot2__ stand for "Grammar of Graphics".
+The Grammar of Graphics provides a systematic way to build any graph, and it underlies the __ggplot2__ package. In fact, the first two letters of __ggplot2__ stand for "Grammar of Graphics".
 
 ### The Grammar of Graphics
 
@@ -525,7 +533,7 @@ The R language is subdivided into __packages__, small collections of data sets a
 
 When you first install R, you get a small collection of core packages known as __base R__. The remaining packages---there are over 10,000 of them---are optional. You don't need to install them unless you want to use them.
 
-__ggplot2__ is one of these optionals packages, so are the other packages that we will look at in these tutorials. Some of the most popular and most modern parts of R come in the optional packages.
+__ggplot2__ is one of these optional packages, so are the other packages that we will look at in these tutorials. Some of the most popular and most modern parts of R come in the optional packages.
 
 You don't need to worry about installing packages in these tutorials. Each tutorial comes with all of the packages that you need pre-installed; this is how we make the tutorials easy to use.
 

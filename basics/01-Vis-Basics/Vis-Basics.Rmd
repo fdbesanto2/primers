@@ -10,6 +10,8 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
+library(fgeo.data)
+
 checker <- function(label, user_code, check_code, envir_result, evaluate_result, ...) {
   list(message = check_code, correct = TRUE, location = "append")
 }
@@ -30,45 +32,28 @@ These skills will quickly add visualization to your data science toolkit. You ca
 
 ### Acknowledgements
 
+These document was cloned from https://rstudio.cloud/learn/primers/1.1 and adapted for ForestGEO.
+
 These examples are excerpted from _R for Data Science_ by Hadley Wickham and Garrett Grolemund, published by O’Reilly Media, Inc., 2016, ISBN: 9781491910399. You can purchase the book at [shop.oreilly.com](http://shop.oreilly.com/product/0636920034407.do).
 
-This tutorial uses the [core tidyverse packages](http://tidyverse.org/), including ggplot2, which have been pre-loaded for your convenience.
+This tutorial uses the [core tidyverse packages](http://tidyverse.org/), including __ggplot2__, which have been pre-loaded for your convenience.
 
 ## A code template
 
-> "The simple graph has brought more information to the data analyst’s mind 
-> than any other device. " --- John Tukey
+> "The simple graph has brought more information to the data analyst’s mind than any other device. " --- John Tukey
 
-### Query
+### `luquillo_tree5_random`
 
-Let's begin the tutorial with a question to explore.
+The dataset `luquillo_tree5_random` comes in __fgeo.data__. `luquillo_tree5_random` contains a random sample of trees recorded during the census 5 of Luquillo, a ForestGEO plot in Puerto Rico.
 
-```{r predict, echo = FALSE}
-question("What do you think: Do cars with big engines use more fuel than cars with small engines?", 
-         type = "single",
-         correct = "Great!",
-         answer("Cars with bigger engines use _more_ fuel.", correct = TRUE, message = "In other words, there is a positive relationship between engine size and fuel efficiency. Now let's test your hypothesis against data."),
-         answer("Cars with bigger engines use _less_ fuel.", correct = TRUE, message = "In other words, there is a negative relationship between engine size and fuel efficiency. Now let's test your hypothesis against data.")
-)
-```
-
-### `mpg`
-
-You can test your answer with two things: the `mpg` dataset that comes in ggplot2 and a plot. `mpg` contains observations collected on 38 models of cars by the US Environmental Protection Agency. Among the variables in `mpg` are:
-
-1. `displ`, a car's engine size, in liters.
-1. `hwy`, a car's fuel efficiency on the highway, in miles per gallon (mpg). 
-
-    A car with a low fuel efficiency consumes more fuel than a car with a high fuel efficiency when they travel the same distance.
-
-To see the `mpg` data frame, type `mpg` in the code block below and click "Submit Answer".
+To see the `luquillo_tree5_random` dataframe, type `luquillo_tree5_random` in the code block below and click "Submit Answer".
 
 ```{r mpg0, exercise = TRUE}
-
+luquillo_tree5_random
 ```
 
 ```{r mpg0-solution}
-mpg
+luquillo_tree5_random
 ```
 
 ```{r mpg0-check}
@@ -77,24 +62,18 @@ mpg
 
 ### A plot
 
-The code below uses functions from the **ggplot2** package to plot the relationship between `displ` and `hwy`. 
+The code below uses functions from the **ggplot2** package to plot the relationship between `gx` and `gy`, which gives the position of each tree in the forest plot.
 
 Let's look at the plot and then talk about the code itself. To see the plot, click "Submit Answer" to run the code below.
 
 ```{r ggplot1, exercise = TRUE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 ```{r ggplot1-check}
-"Excellent! Can you spot the relationship?"
+"Excellent!"
 ```
-
-### And the answer is...
-
-The plot shows a negative relationship between engine size (`displ`) and fuel efficiency (`hwy`). Points that have a large value of `displ` have a small value of `hwy` and vice versa.
-
-In other words, cars with big engines use _more_ fuel. If that was your hypothesis, you were right!
 
 Now let's look at how we made the plot.
 
@@ -103,37 +82,37 @@ Now let's look at how we made the plot.
 Here's the code that we used to make the plot. Notice that it contains three functions: `ggplot()`, `geom_point()`, and `aes()`.
 
 ```{r eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 The first function, `ggplot()`, creates a coordinate system that you can add layers to. The first argument of `ggplot()` is the dataset to use in the graph. 
 
-By itself, `ggplot(data = mpg)` creates an empty graph, but it is not very interesting so I'm not going to show it here.
+By itself, `ggplot(data = luquillo_tree5_random)` creates an empty graph, but it is not very interesting so I'm not going to show it here.
 
-### geom_point()
+### `geom_point()`
 
 ```{r eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 `geom_point()` adds a layer of points to the empty plot created by `ggplot()`. As a result, we get a scatterplot. 
 
-### mapping = aes()
+### `mapping = aes()`
 
 ```{r eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 `geom_point()` takes a `mapping` argument, which defines which variables in your dataset are mapped to which axes in your graph. The `mapping` argument is always paired with the function `aes()`, which you use to gather together all of the mappings that you want to create. 
 
-Here, we want to map the `displ` variable to the x axis and the `hwy` variable to the y axis, so we add `x = displ` and `y = hwy` inside of `aes()` (and we separate them with a comma). Where will ggplot2 look for these mapped variables? In the data frame that we passed to the `data` argument, in this case, `mpg`.
+Here, we want to map the `gx` variable to the x axis and the `gy` variable to the y axis, so we add `x = gx` and `y = gy` inside of `aes()` (and we separate them with a comma). Where will __ggplot2__ look for these mapped variables? In the dataframe that we passed to the `data` argument, in this case, `luquillo_tree5_random`.
 
 ### A graphing workflow
 
-Our code follows the common workflow for making graphs with ggplot2. To make a graph, you: 
+Our code follows the common workflow for making graphs with __ggplot2__. To make a graph, you: 
 
 1. Start the graph with `ggplot()`
 1. Add elements to the graph with a `geom_` function
@@ -143,7 +122,7 @@ Our code follows the common workflow for making graphs with ggplot2. To make a g
 
 In fact, you can turn our code into a reusable template for making graphs. To make a graph, replace the bracketed sections in the code below with a data set, a `geom_` function, or a collection of mappings.
 
-Give it a try! Replace the bracketed sections with `mpg`, `geom_boxplot`, and `x = class, y = hwy` to make a slightly different graph. Be sure to delete the `#` symbols before you run the code.
+Give it a try! Replace the bracketed sections with `luquillo_tree5_random`, `geom_boxplot`, and `x = sp, y = dbh` to make a slightly different graph. Be sure to delete the `#` symbols before you run the code.
 
 ```{r template, exercise = TRUE, eval = FALSE}
 # ggplot(data = <DATA>) + 
@@ -151,12 +130,12 @@ Give it a try! Replace the bracketed sections with `mpg`, `geom_boxplot`, and `x
 ```
 
 ```{r template-solution}
-ggplot(data = mpg) + 
-  geom_boxplot(mapping = aes(x = class, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_boxplot(mapping = aes(x = sp, y = dbh))
 ```
 
 ```{r template-check}
-"Good job! This plot uses boxplots to compare the fuel efficiencies of different types of cars. ggplot2 comes with many geom functions that each add a different type of layer to a plot. You'll learn more about boxplots and other geoms in the tutorials that follow."
+"Good job! This plot uses boxplots to compare the diameter of different tree species. ggplot2 comes with many geom functions that each add a different type of layer to a plot. You'll learn more about boxplots and other geoms in the tutorials that follow."
 ```
 
 ### Common problems
@@ -170,8 +149,8 @@ Start by carefully comparing the code that you're running to the code in the exa
 One common problem when creating ggplot2 graphics is to put the `+` in the wrong place: it has to come at the end of a line, not the start. In other words, make sure you haven't accidentally written code like this:
 
 ```R
-ggplot(data = mpg) 
-+ geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random)
+  + geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 ### help
@@ -182,7 +161,7 @@ If that doesn't help, carefully read the error message that appears when you run
 
 ### Exercise 1
 
-Run `ggplot(data = mpg)` what do you see?
+Run `ggplot(data = luquillo_tree5_random)` what do you see?
 
 ```{r blank, exercise = TRUE}
 
@@ -194,7 +173,7 @@ Run `ggplot(data = mpg)` what do you see?
      
 ### Exercise 2 
 
-Make a scatterplot of `cty` vs `hwy`.
+Make a scatterplot of `gx` vs `dbh`.
 
 ```{r scatterplot, exercise = TRUE}
 
@@ -210,40 +189,23 @@ Make a scatterplot of `cty` vs `hwy`.
 
 ### Exercise 3  
 
-What happens if you make a scatterplot of `class` vs `drv`. Try it. Why is the plot not useful?
+What happens if you make a scatterplot of `status` vs `sp`. Try it. Why is the plot not useful?
     
 ```{r scatterplot2, exercise = TRUE}
 
 ```
 
 ```{r scatterplot2-check}
-"Nice job! `class` and `drv` are both categorical variables. As a result, points can only appear at certain values, where many points overlap each other. You have no idea how many points fall on top of each other at each location. Experiment with geom_count() to find a better solution."
+"Nice job! `status` and `sp` are both categorical variables. As a result, points can only appear at certain values, where many points overlap each other. You have no idea how many points fall on top of each other at each location. Experiment with geom_count() to find a better solution."
 ```
-
 
 ## Aesthetic mappings
 
-> "The greatest value of a picture is when it forces us to notice what we
-> never expected to see." --- John Tukey
-
-
-### A closer look
-
-In the plot below, one group of points (highlighted in red) seems to fall outside of the linear trend between engine size and gas mileage. These cars have a higher mileage than you might expect. How can you explain these cars? 
-
-```{r, echo = FALSE}
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
-  geom_point() + 
-  geom_point(data = dplyr::filter(mpg, displ > 5, hwy > 20), colour = "red", size = 2.2)
-```
-
-### A hypothesis
-
-Let's hypothesize that the cars are hybrids. One way to test this hypothesis is to look at the `class` value for each car. The `class` variable of the `mpg` dataset classifies cars into groups such as compact, midsize, and SUV. If the outlying points are hybrids, they should be classified as compact cars or, perhaps, subcompact cars (keep in mind that this data was collected before hybrid trucks and SUVs became popular). To check this, we need to add the `class` variable to the plot.
+> "The greatest value of a picture is when it forces us to notice what we never expected to see." --- John Tukey
 
 ### Aesthetics
 
-You can add a third variable, like `class`, to a two dimensional scatterplot by mapping it to a new __aesthetic__. An aesthetic is a visual property of the objects in your plot. Aesthetics include things like the size, the shape, or the color of your points. 
+You can add a third variable, like `status`, to a two dimensional scatterplot by mapping it to a new __aesthetic__. An aesthetic is a visual property of the objects in your plot. Aesthetics include things like the size, the shape, or the color of your points. 
 
 You can display a point (like the one below) in different ways by changing the values of its aesthetic properties. Since we already use the word "value" to describe data, let's use the word "level" to describe aesthetic properties. Here we change the levels of a point's size, shape, and color to make the point small, triangular, or blue:
 
@@ -260,13 +222,13 @@ ggplot() +
 
 ### A strategy
 
-We can add the `class` variable to the plot by mapping the levels of an aesthetic (like color) to the values of `class`. For example, we can color a point green if it belongs to the compact class, blue if it belongs to the midsize class, and so on. 
+We can add the `status` variable to the plot by mapping the levels of an aesthetic (like color) to the values of `status`.
 
-Let's give this a try. Fill in the blank piece of code below with `color = class`. What happens? Delete the commenting symbols (`#`) before running your code. (If you prefer British English, you can use `colour` instead of `color`.)
+Let's give this a try. Fill in the blank piece of code below with `color = status`. What happens? Delete the commenting symbols (`#`) before running your code. (If you prefer British English, you can use `colour` instead of `color`.)
 
 ```{r aesthetics, exercise = TRUE, exercise.eval = FALSE}
-# ggplot(data = mpg) + 
-#   geom_point(mapping = aes(x = displ, y = hwy, ____________))
+# ggplot(data = luquillo_tree5_random) + 
+#   geom_point(mapping = aes(x = gx, y = gy, ____________))
 ```
 
 <div id="aesthetics-hint">
@@ -274,35 +236,35 @@ Let's give this a try. Fill in the blank piece of code below with `color = class
 </div>
 
 ```{r aesthetics-solution}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy, color = status))
 ```
 
 ```{r aesthetics-check}
-"Great Job! You can now tell which class of car each point represents by examining the color of the point."
+"Great Job! You can now tell which status each point represents by examining the color of the point."
 ```
 
 ### And the answer is...
 
-The colors reveal that many of the unusual points in `mpg` are two-seater cars. These cars don't seem like hybrids, and are, in fact, sports cars! Sports cars have large engines like SUVs and pickup trucks, but small bodies like midsize and compact cars, which improves their gas mileage. In hindsight, these cars were unlikely to be hybrids since they have large engines.
+The colors reveal that most trees are alive (`S`), some are have not yet recruited (`P`), and only a few are missing (`M`). It is surprising that there are no dead trees, but keep in mind that `luquillo_tree5_random` is a small and random subset of the original dataset.
 
 This isn't the only insight we've gleaned; you've also learned how to add new aesthetics to your graph. Let's review the process.
 
 ### Aesthetic mappings
 
-To map an aesthetic to a variable, set the name of the aesthetic equal to the name of the variable, and do this inside `mapping = aes()`. ggplot2 will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable. ggplot2 will also add a legend that explains which levels correspond to which values.
+To map an aesthetic to a variable, set the name of the aesthetic equal to the name of the variable, and do this inside `mapping = aes()`. ggplot2 will automatically assign a unique level of the aesthetic (here a unique color) to each unique value of the variable. __ggplot2__ will also add a legend that explains which levels correspond to which values.
 
-This insight gives us a new way to think about the mapping argument. Mappings tell ggplot2 more than which variables to put on which axes, they tell ggplot2 which variables to map to which visual properties. The x and y locations of each point are just two of the many visual properties displayed by a point.
+This insight gives us a new way to think about the mapping argument. Mappings tell __ggplot2__ more than which variables to put on which axes, they tell __ggplot2__ which variables to map to which visual properties. The x and y locations of each point are just two of the many visual properties displayed by a point.
 
 ### Other aesthetics
 
-In the above example, we mapped color to `class`, but we could have mapped size to `class` in the same way. 
+In the above example, we mapped color to `status`, but we could have mapped size to `status` in the same way. 
 
-Change the code below to map `size` to `class`. What happens? 
+Change the code below to map `size` to `status`. What happens? 
 
 ```{r size, exercise = TRUE, exercise.eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy, color = status))
 ```
 
 <div id="size-hint">
@@ -310,21 +272,21 @@ ggplot(data = mpg) +
 </div>
 
 ```{r size-solution}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, size = class))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy, size = status))
 ```
 
 ```{r size-check}
-"Great Job! Now the size of a point represents its class. Did you notice the warning message? ggplot2 gives us a warning here because mapping an unordered variable (class) to an ordered aesthetic (size) is not a good idea."
+"Great Job! Now the size of a point represents its status. Did you notice the warning message? ggplot2 gives us a warning here because mapping an unordered variable (status) to an ordered aesthetic (size) is not a good idea."
 ```
 
 ### alpha
 
-You can also map `class` to the `alpha` aesthetic, which controls the transparency of the points. Try it below.
+You can also map `status` to the `alpha` aesthetic, which controls the transparency of the points. Try it below.
 
 ```{r alpha, exercise = TRUE, exercise.eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 <div id="alpha-hint">
@@ -332,8 +294,8 @@ ggplot(data = mpg) +
 </div>
 
 ```{r alpha-solution}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy, alpha = status))
 ```
 
 ```{r alpha-check}
@@ -342,11 +304,11 @@ ggplot(data = mpg) +
 
 ### Shape
 
-Let's try one more aesthetic. This time map the class of the points to `shape`, then look for the SUVs. What happened?
+Let's try one more aesthetic. This time map the status of the points to `shape`.
 
 ```{r shape, exercise = TRUE, exercise.eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 <div id="shape-hint">
@@ -354,8 +316,8 @@ ggplot(data = mpg) +
 </div>
 
 ```{r shape-solution}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+ggplot(data = luquillo_tree5_random) +
+  geom_point(mapping = aes(x = gx, y = gy, shape = status))
 ```
 
 ```{r shape-check}
@@ -364,20 +326,20 @@ ggplot(data = mpg) +
 
 ### Exercise 1
 
-In the code below, map `cty`, which is a continuous variable, to `color`, `size`, and `shape`. How do these aesthetics behave differently for continuous variables, like `cty`, vs. categorical variables, like `class`? 
+In the code below, map `dbh`, which is a continuous variable, to `color`, `size`, and `shape`. How do these aesthetics behave differently for continuous variables, like `dbh`, vs. categorical variables, like `status`? 
 
 ```{r cty, exercise = TRUE, exercise.eval = FALSE}
-# Map cty to color
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+# Map dbh to color
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 
-# Map cty to size
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+# Map dbh to size
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 
-# Map cty to shape
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+# Map dbh to shape
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 ```{r cty-check}
@@ -386,11 +348,11 @@ ggplot(data = mpg) +
     
 ### Exercise 2
 
-Map `class` to `color`, `size`, and `shape` all in the same plot. Does it work?
+Map `status` to `color`, `size`, and `shape` all in the same plot. Does it work?
 
 ```{r multiple, exercise = TRUE, exercise.eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 ```{r multiple-check}
@@ -398,20 +360,20 @@ ggplot(data = mpg) +
 ```
     
 <div id="multiple-hint">
-**Hint:** Be sure to set each mapping separately, e.g. `color = class`, `size = class`, etc.
+**Hint:** Be sure to set each mapping separately, e.g. `color = status`, `size = status`, etc.
 </div>    
     
 ### Exercise 3
 
-What happens if you map an aesthetic to something other than a variable name, like `aes(colour = displ < 5)`?  Try it.
+What happens if you map an aesthetic to something other than a variable name, like `aes(colour = dbh < 15)`?  Try it.
     
 ```{r nonvar, exercise = TRUE, exercise.eval = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 ```{r nonvar-check}
-"Good job! ggplot2 will map the aesthetic to the results of the expression. Here, ggplot2 mapped the color of each point to TRUE or FALSE based on whther the point's `displ` value was less than five."
+"Good job! ggplot2 will map the aesthetic to the results of the expression. Here, ggplot2 mapped the color of each point to TRUE or FALSE based on whether the point's `dbh` value was less than 15."
 ```
 
 ### Setting aesthetics
@@ -419,15 +381,15 @@ ggplot(data = mpg) +
 What if you just want to make all of the points in your plot blue, like in the plot below?
 
 ```{r echo = FALSE, out.width="80%"}
-ggplot(mpg) +
-  geom_point(aes(displ, hwy), color = "blue")
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy), color = "blue")
 ```
 
 You can do this by setting the color aesthetic _outside_ of the `aes()` function, like this
 
 ```{r setting, exercise = TRUE}
-ggplot(data = mpg) +
-  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy), color = "blue")
 ```
 
 ### Setting vs. Mapping
@@ -435,15 +397,15 @@ ggplot(data = mpg) +
 Setting works for every aesthetic in ggplot2. If you want to manually set the aesthetic to a **value** in the visual space, set the aesthetic outside of `aes()`. 
 
 ```{r setting2, exercise = TRUE}
-ggplot(data = mpg) +
-  geom_point(mapping = aes(x = displ, y = hwy), color = "blue", shape = 3, alpha = 0.5)
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy), color = "blue", shape = 3, alpha = 0.5)
 ```
 
 If you want to map the aesthetic to a **variable** in the data space, map the aesthetic inside `aes()`.
 
 ```{r setting3, exercise = TRUE}
-ggplot(data = mpg) +
-  geom_point(mapping = aes(x = displ, y = hwy, color = class, shape = fl, alpha = displ))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy, color = status, shape = status, alpha = dbh))
 ```
 
 ### Exercise 4
@@ -451,19 +413,18 @@ ggplot(data = mpg) +
 What do you think went wrong in the code below? Fix the code so it does something sensible.
 
 ```{r e4}
-ggplot(data = mpg) +
-  geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy, color = "blue"))
 ```
 
 ```{r e4-solution}
-ggplot(data = mpg) +
-  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy), color = "blue")
 ```
 
 ```{r e4-check}
 "Good job! Putting an aesthetic in the wrong location is one of the most common graphing errors. Sometimes it helps to think of legends. If you will need a legend to understand what the color/shape/etc. means, then you should probably put the aesthetic inside `aes()` --- ggplot2 will build a legend for every aesthetic mapped here. If the aesthetic has no meaning and is just... well, aesthetic, then set it outside of `aes()`."
 ```
-
 
 ### Recap
 
@@ -482,14 +443,14 @@ This raises a new question that we've only brushed over: what is a geom?
 How are these two plots similar? 
 
 ```{r echo = FALSE, out.width = "50%", fig.align="default", message = FALSE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 
-ggplot(data = mpg) + 
-  geom_smooth(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_smooth(mapping = aes(x = gx, y = gy))
 ```
 
-Both plots contain the same x variable, the same y variable, and both describe the same data. But the plots are not identical. Each plot uses a different visual object to represent the data. In ggplot2 syntax, we say that they use different __geoms__.
+Both plots contain the same x variable, the same y variable, and both describe the same data. But the plots are not identical. Each plot uses a different visual object to represent the data. In __ggplot2__ syntax, we say that they use different __geoms__.
 
 A __geom__ is the geometrical object that a plot uses to represent observations. People often describe plots by the type of geom that the plot uses. For example, bar charts use bar geoms, line charts use line geoms, boxplots use boxplot geoms, and so on. Scatterplots break the trend; they use the point geom. 
 
@@ -500,14 +461,14 @@ As we see above, you can use different geoms to plot the same data. The plot on 
 To change the geom in your plot, change the geom function that you add to `ggplot()`. For example, take this code which makes the plot on the left (above), and change `geom_point()` to `geom_smooth()`. What do you get? 
 
 ```{r geom, exercise = TRUE}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_point(mapping = aes(x = gx, y = gy))
 ```
 
 ```{r geom-solution}
 # right
-ggplot(data = mpg) + 
-  geom_smooth(mapping = aes(x = displ, y = hwy))
+ggplot(data = luquillo_tree5_random) + 
+  geom_smooth(mapping = aes(x = gx, y = gy))
 ```
 
 ```{r geom-check}
@@ -516,9 +477,9 @@ ggplot(data = mpg) +
 
 ### More about geoms
 
-ggplot2 provides over 30 geom functions that you can use to make plots, and extension packages provide even more (see <https://www.ggplot2-exts.org> for a sampling). You'll learn how to use these geoms to explore data in the [Visualize Data]() primer. 
+__ggplot2__ provides over 30 geom functions that you can use to make plots, and extension packages provide even more (see <https://www.ggplot2-exts.org> for a sampling). You'll learn how to use these geoms to explore data in the [Visualize Data]() primer. 
 
-Until then, the best way to get a comprehensive overview of the available geoms is with the [ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf). To learn more about any single geom, look at its help page, e.g. `?geom_smooth`.
+Until then, the best way to get a comprehensive overview of the available geoms is with the [__ggplot2__ cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf). To learn more about any single geom, look at its help page, e.g. `?geom_smooth`.
 
 ### Exercise 1
 
@@ -526,14 +487,17 @@ What geom would you use to draw a line chart? A boxplot? A histogram? An area ch
 
 ### Exercise 2  
 
-
 ```{r q1, echo = FALSE}
-question("What does the `se` argument to `geom_smooth()` do?",
-         answer("Nothing. `se` is not an argument of `geom_smooth()`"),
-         answer("chooses a method for calculating the smooth line", message = "That is what the `method` argument of `geom_smooth()` does."),
-         answer("controls whether or not to **s**how **e**rrors"),
-         answer("Adds or removes a standard error ribbon around the smooth line", correct = TRUE),
-         allow_retry = TRUE
+question(
+  "What does the `se` argument to `geom_smooth()` do?",
+  answer("Nothing. `se` is not an argument of `geom_smooth()`"),
+  answer("chooses a method for calculating the smooth line", 
+    message = "That is what the `method` argument of `geom_smooth()` does."),
+  answer("controls whether or not to **s**how **e**rrors"),
+  answer("Adds or removes a standard error ribbon around the smooth line",
+    correct = TRUE
+  ),
+  allow_retry = TRUE
 )
 ```
 
@@ -541,7 +505,7 @@ question("What does the `se` argument to `geom_smooth()` do?",
 
 The ideas that you've learned here: geoms, aesthetics, and the implied existence of a data space and a visual space combine to form a system known as the Grammar of Graphics.
 
-The Grammar of Graphics provides a systematic way to build any graph, and it underlies the ggplot2 package. In fact, the first two letters of ggplot2 stand for "Grammar of Graphics".
+The Grammar of Graphics provides a systematic way to build any graph, and it underlies the ggplot2 package. In fact, the first two letters of __ggplot2__ stand for "Grammar of Graphics".
 
 ### The Grammar of Graphics
 
@@ -549,19 +513,19 @@ The best way to understand the Grammar of Graphics is to see it explained in act
 
 ![](https://vimeo.com/223812632)
 
-## The ggplot2 package
+## The __ggplot2__ package
 
 ### What is a package?
 
-Throughout this tutorial, I've referred to ggplot2 as a package. What does that mean?
+Throughout this tutorial, I've referred to __ggplot2__ as a package. What does that mean?
 
-The R language is subdivided into __packages__, small collections of data sets and functions that all focus on a single task. The functions that we used in this tutorial come from one of those packages, the ggplot2 package, which focuses on visualizing data.
+The R language is subdivided into __packages__, small collections of data sets and functions that all focus on a single task. The functions that we used in this tutorial come from one of those packages, the __ggplot2__ package, which focuses on visualizing data.
 
 ### What should you know about packages?
 
 When you first install R, you get a small collection of core packages known as __base R__. The remaining packages---there are over 10,000 of them---are optional. You don't need to install them unless you want to use them.
 
-ggplot2 is one of these optionals packages, so are the other packages that we will look at in these tutorials. Some of the most popular and most modern parts of R come in the optional packages.
+__ggplot2__ is one of these optionals packages, so are the other packages that we will look at in these tutorials. Some of the most popular and most modern parts of R come in the optional packages.
 
 You don't need to worry about installing packages in these tutorials. Each tutorial comes with all of the packages that you need pre-installed; this is how we make the tutorials easy to use.
 
@@ -571,8 +535,8 @@ If you'd like to learn more about installing R packages (or R or the RStudio IDE
 
 ### Where to from here
 
-Congratulations! You can use the ggplot2 code template to plot any dataset in many different ways. As you begin exploring data, you should incorporate these tools into your workflow.
+Congratulations! You can use the __ggplot2__ code template to plot any dataset in many different ways. As you begin exploring data, you should incorporate these tools into your workflow.
 
-There is much more to ggplot2 and Data Visualization than we have covered here. If you would like to learn more about visualizing data with ggplot2, check out RStudio's primer on [Data Visualization]().
+There is much more to __ggplot2__ and Data Visualization than we have covered here. If you would like to learn more about visualizing data with __ggplot2__, check out RStudio's primer on [Data Visualization]().
 
 Your new data visualization skills will make it easier to learn other parts of R, because you can now visualize the results of any change that you make to data. you'll put these skills to immediate use in the next tutorial, which will show you how to extract values from datasets, as well as how to compute new variables and summary statistics from your data. See you there.

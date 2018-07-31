@@ -12,6 +12,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
+library(glue)
 # TODO: Remove
 library(babynames)
 library(fgeo.data)
@@ -43,111 +44,89 @@ This tutorial uses the [core tidyverse packages](http://tidyverse.org/), includi
 
 Click the Next Topic button to begin.
 
+### The history of a species
 
+Consider the dataset `stem_count`, containing a count of alive stems of different species recorded in censuses 1-6 of the Luquillo plot, in Puerto Rico. (`stem_count` is based on a small, random subset of trees and therefore it is OK for examples but invalid for research.)
 
-
-
-
-TODO
-
-## Your name
-
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-library(tidyverse)
+```{r, echo=FALSE}
+stem_count <- fgeo.data::luquillo_stem_random %>% 
+  filter(!is.na(dbh)) %>%
+  add_count(CensusID, sp) %>% 
+  select(CensusID, sp, n, everything())
+stem_count
 ```
 
-
-### The history of your name
-
-You can use the data in `luquillo_stem_random` to make graphs like this, which reveal the history of a tree-stem species.
+You can use the data in `stem_count` to make graphs like this, which reveal the history of stems of a particular species.
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, out.width = "90%"}
-stem_count <- luquillo_stem_random %>% 
-  filter(status != "D") %>% 
-  add_count(CensusID, sp) %>% 
-  mutate(
-    n_tot = nrow(.),
-    prop = n / n_tot
-  ) %>% 
-  select(CensusID, sp, n, prop) %>% 
-  unique() %>% 
-  arrange(CensusID, desc(n))
-  
-  
-  stem_count %>% 
-  ggplot() +
-    geom_line(aes(x = year, y = prop)) +
-    labs(title = "Popularity of the name Garrett")
+spp <- "PREMON"
 
-babynames %>% 
-  filter(name == "Garrett", sex == "M") %>% 
-  ggplot() +
-    geom_line(aes(x = year, y = prop)) +
-    labs(title = "Popularity of the name Garrett")
-
-
-
-
+stem_count %>% 
+  filter(sp == spp) %>%
+  ggplot(aes(CensusID, n)) + 
+  geom_line() +
+  ggtitle(glue("The history of {spp}"))
 ```
 
-But before you do, you will need to trim down `babynames`. At the moment, there are more rows in `babynames` than you need to build your plot. 
+But before you do, you will need to trim down `stem_count`. At the moment, there are more rows in `stem_count` than you need to build your plot. 
 
 ### An example
 
 To see what I mean, consider how I made the plot above: I began with the entire data set, which if plotted as a scatterplot would've looked like this.
 
 ```{r out.width = "60%", cached = TRUE}
-ggplot(babynames) +
-  geom_point(aes(x = year, y = prop)) +
-  labs(title = "Popularity of every name in the data set")
+stem_count %>% 
+  ggplot(aes(CensusID, n)) + 
+  geom_point() +
+  labs(title = "The history of every species in the dataset")
 ```
 
-I then narrowed the data to just the rows that contain my name, before plotting the data with a line geom. Here's how the rows with just my name look as a scatterplot.
+I then narrowed the data to just the rows that contain a single species, before plotting the data with a line geom. Here's how the rows with just one species look as a scatterplot.
 
 ```{r out.width = "60%", cached = TRUE}
-babynames %>% 
-  filter(name == "Garrett", sex == "M") %>% 
-  ggplot() +
-    geom_point(aes(x = year, y = prop)) +
-    labs(title = "Popularity of the name Garrett")
+stem_count %>% 
+  filter(sp == spp) %>%
+  ggplot(aes(CensusID, n)) + 
+  geom_point() +
+  labs(title = glue("The history of {spp}"))
 ```
 
 If I had skipped this step, my line graph would've connected all of the points in the large data set, creating an uninformative graph.
 
 ```{r out.width = "60%", cached = TRUE}
-ggplot(babynames) +
-  geom_line(aes(x = year, y = prop)) +
-  labs(title = "Popularity of every name in the data set")
+stem_count %>% 
+  ggplot(aes(CensusID, n)) + 
+  geom_line() +
+  labs(title = glue("The history of {spp}"))
 ```
 
-Your goal in this section is to repeat this process for your own name (or a name that you choose). Along the way, you will learn a set of functions that isolate information within a data set. 
+Your goal in this section is to repeat this process for `r spp` (or a species that you choose). Along the way, you will learn a set of functions that isolate information within a data set. 
 
 ### Isolating data
 
-This type of task occurs often in Data Science: you need to extract data from a table before you can use it. You can do this task quickly with three functions that come in the dplyr package:
+This type of task occurs often in Data Science: you need to extract data from a table before you can use it. You can do this task quickly with three functions that come in the **dplyr** package:
 
-1. **select()** - which extracts columns from a data frame
-1. **filter()** - which extracts rows from a data frame
-1. **arrange()** - which moves important rows to the top of a data frame
+1. **select()** - which extracts columns from a data frame.
+1. **filter()** - which extracts rows from a data frame.
+1. **arrange()** - which moves important rows to the top of a data frame.
 
-Each function takes a data frame or tibble as it's first argument and returns a new data frame or tibble as its output. 
+Each function takes a dataframe or tibble as it's first argument and returns a new dataframe or tibble as its output. 
 
 ## select()
 
-`select()` extracts columns of a data frame and returns the columns  as a new data frame. To use `select()`, pass it the name of a data frame to extract columns from, and then the names of the columns to extract. The column names do not need to appear in quotation marks or be prefixed with a `$`; `select()` knows to find them in the data frame that you supply.
+`select()` extracts columns of a data frame and returns the columns  as a new data frame. To use `select()`, pass it the name of a data frame to extract columns from, and then the names of the columns to extract. The column names do not need to appear in quotation marks or be prefixed with a `$`; `select()` knows to find them in the dataframe that you supply.
 
 ### Exercise - select()
 
-Use the example below to get a feel for `select()`. Can you extract just the `name` column? How about the `name` and `year` columns? How about all of the columns except `prop`?
+Use the example below to get a feel for `select()`. Can you extract just the `CensusID` column? How about the `CensusID` and `sp` columns?
 
 ```{r select-1, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "bnames"}
-select(babynames, name, sex)
+select(stem_count, CensusID)
 ```
 
 ```{r select-1-solution}
-select(babynames, name)
-select(babynames, name, year)
-select(babynames, year, sex, name, n)
+select(stem_count, CensusID)
+select(stem_count, CensusID, sp)
 ```
 
 ### select() helpers
@@ -155,34 +134,41 @@ select(babynames, year, sex, name, n)
 You can also use a series of helpers with `select()`. For example, if you place a minus sign before a column name, `select()` will return every column but that column. Can you predict how the minus sign will work here?
 
 ```{r select-2, exercise = TRUE, exercise.setup = "bnames"}
-select(babynames, -c(n, prop))
+select(stem_count, -c(CensusID, sp))
 ```
 
 The table below summarizes the other `select()` helpers that are available in dplyr. Study it, and then click "Continue" to test your understanding.
 
 Helper Function   | Use                                               | Example
 ----------------- | ------------------------------------------------- | -------
-**-**             | Columns except                               | `select(babynames, -prop)`
-**:**             | Columns between (inclusive)                  | `select(babynames, year:n)`
-**contains()**    | Columns that contains a string               | `select(babynames, contains("n"))`
-**ends_with()**   | Columns that ends with a string              | `select(babynames, ends_with("n"))`
-**matches()**     | Columns that matches a regex                 | `select(babynames, matches("n"))`
-**num_range()**   | Columns with a numerical suffix in the range | Not applicable with `babynames`
-**one_of()**      | Columns whose name appear in the given set     | `select(babynames, one_of(c("sex", "gender"))`
-**starts_with()** | Columns that starts with a string            | `select(babynames, starts_with("n"))`
+**-**             | Columns except                               | `select(stem_count, -CensusID)`
+**:**             | Columns between (inclusive)                  | `select(stem_count, CensusID:n)`
+**contains()**    | Columns that contains a string               | `select(stem_count, contains("ID"))`
+**ends_with()**   | Columns that ends with a string              | `select(stem_count, ends_with("ID"))`
+**matches()**     | Columns that matches a regex                 | `select(stem_count, matches("ID"))`
+**num_range()**   | Columns with a numerical suffix in the range | Not applicable with `stem_count`
+**one_of()**      | Columns whose name appear in the given set     | `select(stem_count, one_of(c("CensusID", "treeID")))`
+**starts_with()** | Columns that starts with a string            | `select(stem_count, starts_with("tree"))`
 
 ### select() quiz
 
 ```{r select-quiz}
 question(
-  "Which of these is not a way to select the `name` and `n` columns together?",
-  answer("select(babynames, -c(year, sex, prop))"),
-  answer("select(babynames, name:n)"),
-  answer('select(babynames, starts_with("n"))'),
-  answer('select(babynames, ends_with("n"))', correct = TRUE),
+  "Which of these is not a way to select the `sp` and `n` columns together?",
+  answer("select(stem_count, -c(sp, n))", , correct = TRUE),
+  answer("select(stem_count, sp, n)"),
+  answer("select(stem_count, CensusID:n)"),
   allow_retry = TRUE
 )
 ```
+
+
+TODO xxxcont. here
+
+
+
+
+
 
 ## filter()
 

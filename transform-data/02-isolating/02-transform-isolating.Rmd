@@ -1,6 +1,6 @@
 ---
 title: "Isolating Data with dplyr"
-author: Adapter by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
+author: Adapted by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
 output: 
   learnr::tutorial:
     progressive: true
@@ -12,9 +12,6 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
-library(glue)
-# TODO: Remove
-library(babynames)
 library(fgeo.data)
 
 checker <- function(label,
@@ -37,7 +34,7 @@ knitr::opts_chunk$set(echo = FALSE)
 In this case study, you will explore the abundance of tree-stems of different species over time. Along the way, you will master some of the most useful functions for isolating variables, cases, and values within a data frame:
 
 * `select()` and `filter()`, which let you extract rows and columns from a data frame.
-* `arrange()`, which lets yuo reorder the rows in your data.
+* `arrange()`, which lets you reorder the rows in your data.
 * `%>%`, which organizes your code into reader-friendly "pipes".
 
 This tutorial uses the [core tidyverse packages](http://tidyverse.org/), including __ggplot2__, __tibble__, and __dplyr__, as well as the __fgeo.data__ package. All of these packages have been pre-installed and pre-loaded for your convenience.
@@ -59,13 +56,11 @@ stem_count
 You can use the data in `stem_count` to make graphs like this, which reveal the history of stems of a particular species.
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, out.width = "90%"}
-spp <- "PREMON"
-
 stem_count %>% 
-  filter(sp == spp) %>%
+  filter(sp == "PREMON") %>%
   ggplot(aes(CensusID, n)) + 
   geom_line() +
-  ggtitle(glue("The history of {spp}"))
+  labs(title = "The history of PREMON")
 ```
 
 But before you do, you will need to trim down `stem_count`. At the moment, there are more rows in `stem_count` than you need to build your plot. 
@@ -85,10 +80,10 @@ I then narrowed the data to just the rows that contain a single species, before 
 
 ```{r out.width = "60%", cached = TRUE}
 stem_count %>% 
-  filter(sp == spp) %>%
+  filter(sp == "PREMON") %>%
   ggplot(aes(CensusID, n)) + 
-  geom_point() +
-  labs(title = glue("The history of {spp}"))
+  geom_line() +
+  labs(title = "The history of PREMON")
 ```
 
 If I had skipped this step, my line graph would've connected all of the points in the large data set, creating an uninformative graph.
@@ -97,10 +92,10 @@ If I had skipped this step, my line graph would've connected all of the points i
 stem_count %>% 
   ggplot(aes(CensusID, n)) + 
   geom_line() +
-  labs(title = glue("The history of {spp}"))
+  labs(title = "The history of PREMON")
 ```
 
-Your goal in this section is to repeat this process for `r spp` (or a species that you choose). Along the way, you will learn a set of functions that isolate information within a data set. 
+Your goal in this section is to repeat this process for PREMON (or a species that you choose). Along the way, you will learn a set of functions that isolate information within a data set. 
 
 ### Isolating data
 
@@ -137,7 +132,7 @@ You can also use a series of helpers with `select()`. For example, if you place 
 select(stem_count, -c(CensusID, sp))
 ```
 
-The table below summarizes the other `select()` helpers that are available in dplyr. Study it, and then click "Continue" to test your understanding.
+The table below summarizes the other `select()` helpers that are available in __dplyr__. Study it, and then click "Continue" to test your understanding.
 
 Helper Function   | Use                                               | Example
 ----------------- | ------------------------------------------------- | -------
@@ -162,24 +157,16 @@ question(
 )
 ```
 
-
-TODO xxxcont. here
-
-
-
-
-
-
 ## filter()
 
-`filter()` extracts rows from a data frame and returns them as a new data frame. As with `select()`, the first argument of `filter()` should be a data frame to extract rows from. The arguments that follow should be logical tests; `filter()` will return every row for which the tests return `TRUE`.
+`filter()` extracts rows from a dataframe and returns them as a new dataframe. As with `select()`, the first argument of `filter()` should be a dataframe to extract rows from. The arguments that follow should be logical tests; `filter()` will return every row for which the tests return `TRUE`.
 
 ### filter in action
 
-For example, the code chunk below returns every row with the name "Sea" in `babynames`. 
+For example, the code chunk below returns every row with the `sp` value "PREMON" in `stem_count`. 
 
 ```{r echo = TRUE}
-filter(babynames, name == "Sea")
+filter(stem_count, sp == "PREMON")
 ```
 
 ### Logical tests
@@ -201,18 +188,18 @@ Logical operator | tests                                | Example
 
 See if you can use the logical operators to manipulate our code below to show:
 
-* All of the names where prop is greater than or equal to 0.08
-* All of the children named "Khaleesi"
-* All of the names that have a missing value for `n` (Hint: this should return an empty data set).
+* All stems in `stem_count` where n is greater than or equal to 230.
+* All of the stems of the "CASARB" species.
+* All of the stems that have a missing value for `n` (Hint: this should return an empty data set).
 
 ```{r filter-0, exercise = TRUE, exercise.setup = "bnames"}
-filter(babynames, name == "Sea")
+filter(stem_count, sp == "PREMON")
 ```
 
 ```{r filter-0-solution}
-filter(babynames, prop >= 0.08)
-filter(babynames, name == "Khaleesi")
-filter(babynames, is.na(n))
+filter(stem_count, n >= 230)
+filter(stem_count, sp == "CASARB")
+filter(stem_count, is.na(n))
 ```
 
 ### Two common mistakes
@@ -220,7 +207,7 @@ filter(babynames, is.na(n))
 When you use logical tests, be sure to look out for two common mistakes. One appears in each code chunk below. Can you find them? When you spot a mistake, fix it and then run the chunk to confirm that it works.
 
 ```{r eval = FALSE, echo = TRUE}
-filter(babynames, name = "Sea")
+filter(stem_count, sp = "PREMON")
 ```
 
 ```{r filter-1a, exercise = TRUE, exercise.setup = "bnames"}
@@ -228,7 +215,7 @@ filter(babynames, name = "Sea")
 ```
 
 ```{r filter-1a-solution}
-filter(babynames, name == "Sea")
+filter(stem_count, sp == "PREMON")
 ```
 
 ```{r filter-1a-check}
@@ -236,7 +223,7 @@ filter(babynames, name == "Sea")
 ```
 
 ```{r eval = FALSE, echo = TRUE}
-filter(babynames, name == Sea)
+filter(stem_count, sp == PREMON)
 ```
 
 ```{r filter-1b, exercise = TRUE, exercise.setup = "bnames"}
@@ -244,11 +231,11 @@ filter(babynames, name == Sea)
 ```
 
 ```{r filter-1b-solution}
-filter(babynames, name == "Sea")
+filter(stem_count, sp == "PREMON")
 ```
 
 ```{r filter-1b-check}
-"Good Job! As written this code would check that name is equal to the contents of the object named Sea, which does not exist."
+"Good Job! As written this code would check that name is equal to the contents of the object named PREMON, which does not exist."
 ```
 
 ### Two mistakes - Recap
@@ -256,16 +243,16 @@ filter(babynames, name == "Sea")
 When you use logical tests, be sure to look out for these two common mistakes:
 
 1. using `=` instead of `==` to test for equality.
-2. forgetting to use quotation marks when comparing strings, e.g. `name == Abby`, instead of `name == "Abby"` 
+2. forgetting to use quotation marks when comparing strings, e.g. `sp == PREMON`, instead of `sp == "PREMON"` 
 
 ### Combining tests
 
 If you provide more than one test to `filter()`, `filter()` will combine the tests with an **and** statement (`&`): it will only return the rows that satisfy all of the tests. 
 
-To combine multiple tests in a different way, use R's Boolean operators. For example, the code below will return all of the children named Sea or Anemone.
+To combine multiple tests in a different way, use R's Boolean operators. For example, the code below will return all of the species encoded as PREMON or Sea or Anemone.
 
 ```{r echo = TRUE}
-filter(babynames, name == "Sea" | name == "Anemone")
+filter(stem_count, sp == "PREMON" | sp == "CASARB")
 ```
 
 ### Boolean operators
@@ -286,18 +273,18 @@ Boolean operator | represents                                 | Example
 
 Use Boolean operators to alter the code chunk below to return only the rows that contain:
 
-* *Girls* named Sea
-* Names that were used by exactly 5 or 6 children in 1880
-* Names that are one of Acura, Lexus, or Yugo
+* Stems from the fourth census of the PREMON species.
+* Stems from the fourth or sixth censuses of the PREMON species.
+* Stems which species are one of CORBOR, MICPRA, or EUGSTA.
 
 ```{r filter-2, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "bnames"}
-filter(babynames, name == "Sea" | name == "Anemone")
+filter(stem_count, sp == "PREMON" | sp == "CASARB")
 ```
 
 ```{r filter-2-solution}
-filter(babynames, name == "Sea", sex == "F")
-filter(babynames, n == 5 | n == 6, year == 1880)
-filter(babynames, name %in% c("Acura", "Lexus", "Yugo"))
+filter(stem_count, CensusID == 4, sp == "PREMON")
+filter(stem_count, CensusID == 4 | CensusID == 6, sp == "PREMON")
+filter(stem_count, sp %in% c("CORBOR", "MICPRA", "EUGSTA"))
 ```
 
 ### Two more common mistakes
@@ -305,7 +292,7 @@ filter(babynames, name %in% c("Acura", "Lexus", "Yugo"))
 Logical tests also invite two common mistakes that you should look out for. Each is displayed in a code chunk below, one produces an error and the other is needlessly verbose. Diagnose the chunks and then fix the code.
 
 ```{r eval = FALSE, echo = TRUE}
-filter(babynames, 10 < n < 20)
+filter(stem_count, 100 < n < 200)
 ```
 
 ```{r filter-3, exercise = TRUE, exercise.setup = "bnames"}
@@ -313,7 +300,7 @@ filter(babynames, 10 < n < 20)
 ```
 
 ```{r filter-3-solution}
-filter(babynames, 10 < n, n < 20)
+filter(stem_count, 100 < n, n < 200)
 ```
 
 ```{r filter-3-check}
@@ -321,7 +308,7 @@ filter(babynames, 10 < n, n < 20)
 ```
 
 ```{r eval = FALSE, echo = TRUE}
-filter(babynames, n == 5 | n == 6 | n == 7 | n == 8 | n == 9)
+filter(stem_count, n == 50 | n == 60 | n == 70 | n == 80 | n == 90)
 ```
 
 ```{r filter-4, exercise = TRUE, exercise.setup = "bnames"}
@@ -329,7 +316,7 @@ filter(babynames, n == 5 | n == 6 | n == 7 | n == 8 | n == 9)
 ```
 
 ```{r filter-4-solution}
-filter(babynames, n %in% c(5, 6, 7, 8, 9))
+filter(stem_count, n %in% c(50, 60, 70, 80, 90))
 ```
 
 ```{r filter-4-check}
@@ -346,131 +333,125 @@ When you combine multiple logical tests, be sure to look out for these two commo
 
 ## arrange()
 
-`arrange()` returns all of the rows of a data frame reordered by the values of a column. As with `select()`, the first argument of `arrange()` should be a data frame and the remaining arguments should be the names of columns. If you give `arrange()` a single column name, it will return the rows of the data frame reordered so that the row with the lowest value in that column appears first, the row with the second lowest value appears second, and so on. If the column contains character strings, `arrange()` will place them in alphabetical order.
+`arrange()` returns all of the rows of a dataframe reordered by the values of a column. As with `select()`, the first argument of `arrange()` should be a dataframe and the remaining arguments should be the names of columns. If you give `arrange()` a single column name, it will return the rows of the data frame reordered so that the row with the lowest value in that column appears first, the row with the second lowest value appears second, and so on. If the column contains character strings, `arrange()` will place them in alphabetical order.
 
 ### Exercise - arrange()
 
-Use the code chunk below to arrange babynames by `n`. Can you tell what the smallest value of `n` is? 
+Use the code chunk below to arrange `stem_count` by `n`. Can you tell what the smallest value of `n` is? 
 
 ```{r arrange-1, exercise = TRUE, exercise.setup = "bnames"}
 
 ```
 
 ```{r arrange-1-solution}
-arrange(babynames, n)
+arrange(stem_count, n)
 ```
 
 ```{r arrange-1-check}
-"Good job! The compiler of `babynames` used 5 as a cutoff; a name only made it into babynames for a given year and gender if it was used for five or more children."
+"Good job!"
 ```
 
 ### Tie breakers
 
-If you supply additional column names, `arrange()` will use them as tie breakers to order rows that have identical values in the earlier columns. Add to the code below, to make `prop` a tie breaker. The result should first order rows by value of `n` and then reorder rows within each value of `n` by values of `prop`. 
+If you supply additional column names, `arrange()` will use them as tie breakers to order rows that have identical values in the earlier columns. Add to the code below, to make `sp` a tie breaker. The result should first order rows by value of `n` and then reorder rows within each value of `n` by values of `treeID`. 
 
 ```{r arrange-2, exercise = TRUE, exercise.eval = TRUE}
-arrange(babynames, n)
+arrange(stem_count, n)
 ```
 
 ```{r arrange-2-solution}
-arrange(babynames, n, prop)
+arrange(stem_count, n, treeID)
 ```
 
 ### desc
 
 If you would rather arrange rows in the opposite order, i.e. from _large_ values to _small_ values, surround a column name with `desc()`. `arrange()` will reorder the rows based on the largest values to the smallest.
 
-Add a `desc()` to the code below to display the most popular name for 2015 (the largest year in the dataset) instead of 1880 (the smallest year in the dataset).
+Add a `desc()` to the code below to display the most abundant species for the latest census (the largest `CensusID` in the dataset) instead of the least abundant species.
 
 ```{r arrange-3, exercise = TRUE, exercise.eval = TRUE}
-arrange(babynames, year, desc(prop))
+arrange(stem_count, n, desc(treeID))
 ```
 
 ```{r arrange-3-solution}
-arrange(babynames, desc(year), desc(prop))
+arrange(stem_count, desc(n), desc(treeID))
 ```
 
 Think you have it? Click Continue to test yourself.
 
 ### arrange() quiz
 
-Which name was the most popular for a single gender in a single year? In the code chunk below, use `arrange()` to make the row with the largest value of `prop` appear at the top of the data set.
+Which species was the most abundant for a single quadrat in a single census? In the code chunk below, use `arrange()` to make the row with the smallest `treeID` value and the largest value of `n` appear at the top of the data set.
 
 ```{r arrange-4, exercise = TRUE, exercise.setup = "bnames"}
 
 ```
 
 ```{r arrange-4-solution}
-arrange(babynames, desc(prop))
+arrange(stem_count, treeID, desc(n))
 ```
 
-Now arrange `babynames` so that the row with the largest value of `n` appears at the top of the data frame. Will this be the same row? Why or why not?
+Now arrange `stem_count` so that the row with the largest value of `n` appears at the top of the dataframe. Will this be the same row? Why or why not?
 
 ```{r arrange-5, exercise = TRUE, exercise.setup = "bnames"}
 
 ```
 
 ```{r arrange-5-solution}
-arrange(babynames, desc(n))
-# The number of children represented by each proportion grew 
-# over time as the population grew 
-```
-
-```{r arrange-5-check}
-"The number of children represented by each proportion grew over time as the population grew."
+arrange(stem_count, desc(n))
 ```
 
 ## %>%
 
 ### Steps
 
-Notice how each dplyr function takes a data frame as input and returns a data frame as output. This makes the functions easy to use in a step by step fashion. For example, you could:
+Notice how each __dplyr__ function takes a dataframe as input and returns a dataframe as output. This makes the functions easy to use in a step by step fashion. For example, you could:
 
-1. Filter babynames to just boys born in 2015
-2. Select the `name` and `n` columns from the result
-3. Arrange those columns so that the most popular names appear near the top.
+1. Filter `stem_count` to just pick stems which `stemID` is "32585".
+2. Select the `CensusID`, `sp`, and `dbh` columns from the result.
+3. Arrange those columns so that the largest `dbh` values appears near the top.
 
 ```{r echo = TRUE}
-boys_2015 <- filter(babynames, year == 2015, sex == "M")
-boys_2015 <- select(boys_2015, name, n)
-boys_2015 <- arrange(boys_2015, desc(n))
-boys_2015
+id_32585 <- filter(stem_count, stemID == "32585")
+id_32585 <- select(id_32585, CensusID, sp, dbh)
+id_32585 <- arrange(id_32585, desc(dbh))
+id_32585
 ```
 
 ### Redundancy
 
-The result shows us the most popular boys names from 2015, which is the most recent year in the data set. But take a look at the code. Do you notice how we re-create `boys_2015` at each step so we will have something to pass to the next step? This is an inefficient way to write R code.
+The result shows us the largest stem was recorded in the sixth census, which was the latest in this dataset. But take a look at the code. Do you notice how we re-create `id_32585` at each step so we will have something to pass to the next step? This is an inefficient way to write R code.
 
-You could avoid creating `boys_2015` by nesting your functions inside of each other, but this creates code that is hard to read:
+You could avoid creating `id_32585` by nesting your functions inside of each other, but this creates code that is hard to read:
 
 ```{r echo = TRUE, eval = FALSE}
-arrange(select(filter(babynames, year == 2015, sex == "M"), name, n), desc(n))
+arrange(select(filter(stem_count, stemID == "32585"), CensusID, sp, dbh), desc(dbh))
 ```
 
-The dplyr package provides a third way to write sequences of functions: the pipe.
+The __dplyr__ package provides a third way to write sequences of functions: the pipe.
 
 ### %>%
 
 The pipe operator `%>%` performs an extremely simple task: it passes the result on its left into the first argument of the function on its right. Or put another way, `x %>% f(y)` is the same as `f(x, y)`. This piece of code punctuation makes it easy to write and read series of functions that are applied in a step by step way. For example, we can use the pipe to rewrite our code above:
 
 ```{r echo = TRUE}
-babynames %>% 
-  filter(year == 2015, sex == "M") %>% 
-  select(name, n) %>% 
-  arrange(desc(n))
+stem_count %>% 
+  filter(stemID == "32585") %>% 
+  select(CensusID, sp, dbh) %>% 
+  arrange(desc(dbh))
 ```
 
-As you read the code, pronounce `%>%` as "then". You'll notice that dplyr makes it easy to read pipes. Each function name is a verb, so our code resembles the statement, "Take babynames, _then_ filter it by name and sex, _then_ select the name and n columns, _then_ arrange the results by descending values of n."
+As you read the code, pronounce `%>%` as "then". You'll notice that __dplyr__ makes it easy to read pipes. Each function name is a verb, so our code resembles the statement, "Take `stem_count, _then_ filter it by `stemID`, _then_ select the `CensusID` and `dbh` columns, _then_ arrange the results by descending values of `dbh`."
 
-dplyr also makes it easy to write pipes. Each dplyr function returns a data frame that can be piped into another dplyr function, which will accept the data frame as its first argument. In fact, dplyr functions are written with pipes in mind: each function does one simple task. dplyr expects you to use pipes to combine these simple tasks to produce sophisticated results.
+__dplyr__ also makes it easy to write pipes. Each __dplyr__ function returns a dataframe that can be piped into another __dplyr__ function, which will accept the dataframe as its first argument. In fact, __dplyr__ functions are written with pipes in mind: each function does one simple task. __dplyr__ expects you to use pipes to combine these simple tasks to produce sophisticated results.
 
 ### Exercise - Pipes
 
 I'll use pipes for the remainder of the tutorial, and I will expect you to as well. Let's practice a little by writing a new pipe in the chunk below. The pipe should:
 
-1. Filter babynames to just the *girls* that were born in 2015
-2. Select the `name` and `n` columns
-3. Arrange the results so that the most popular names are near the top.
+1. Filter `stem_count` to just pick stems which `stemID` is _"138222"_.
+2. Select the `CensusID`, `sp`, and `dbh` columns from the result.
+3. Arrange those columns so that the largest `dbh` values appears near the top.
 
 Try to write your pipe without copying and pasting the code from above.
 
@@ -479,17 +460,17 @@ Try to write your pipe without copying and pasting the code from above.
 ```
 
 ```{r pipe-1-solution}
-babynames %>% 
-  filter(year == 2015, sex == "F") %>% 
-  select(name, n) %>% 
-  arrange(desc(n))
+stem_count %>% 
+  filter(stemID == "138222") %>% 
+  select(CensusID, sp, dbh) %>% 
+  arrange(desc(dbh))
 ```
 
 ### Your name
 
-You've now mastered a set of skills that will let you easily plot the popularity of your name over time. In the code chunk below, use a combination of dplyr and ggplot2 functions with `%>%` to:
+You've now mastered a set of skills that will let you easily plot the different species over time. In the code chunk below, use a combination of __dplyr__ and __ggplot2__ functions with `%>%` to:
 
-1. Trim `babynames` to just the rows that contain your name and your sex
+1. Trim `stem_count` to just the rows that contain the PREMON species and your 
 2. Trim the result to just the columns that will appear in your graph (not strictly necessary, but useful practice)
 3. Plot the results as a line graph with `year` on the x axis and `prop` on the y axis
 
@@ -500,12 +481,11 @@ Note that the first argument of `ggplot()` takes a data frame, which means you c
 ```
 
 ```{r your-name-1-solution}
-babynames %>% 
-  filter(name == "Garrett", sex == "M") %>% 
-  select(year, prop) %>% 
-  ggplot() +
-    geom_line(aes(x = year, y = prop)) +
-    labs(title = "Popularity of the name Garrett")
+stem_count %>% 
+  filter(sp == "PREMON") %>%
+  ggplot(aes(CensusID, n)) + 
+  geom_line() +
+  labs(title = "The history of PREMON")
 ```
 
 ### Recap
@@ -519,5 +499,3 @@ In that tutorial, you will continue to use the `%>%` operator, which is an essen
 Pipes help make R expressive, like a spoken language. Spoken languages consist of simple words that you combine into sentences to create sophisticated thoughts.
 
 In the tidyverse, functions are like words: each does one simple task well. You can combine these tasks into pipes with `%>%` to perform complex, customized procedures.
-
-

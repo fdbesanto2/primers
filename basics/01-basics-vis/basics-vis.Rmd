@@ -1,6 +1,6 @@
 ---
 title: "Data Visualization Basics"
-author: Adapter by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
+author: Adapted by Mauro Lepore from [RStudio primers](https://github.com/rstudio-education/primers) developed by [Garrett Grolemund](https://github.com/garrettgman)
 output: 
   learnr::tutorial:
     progressive: true

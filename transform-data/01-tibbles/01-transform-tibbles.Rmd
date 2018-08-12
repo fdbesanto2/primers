@@ -144,7 +144,7 @@ You do not need to worry much about tibbles in these tutorials; in future tutori
 
 ### View()
 
-What if you'd like to inspect the remaining portions of a tibble? To see the entire tibble, use the `View()` command. R will launch a window that shows a scroll-able display of the entire data set. Try this below, run `View(luquillo_stem_random)` to see the entire data set.
+What if you'd like to inspect the remaining portions of a tibble? To see the entire tibble, use the `View()` command. R will launch a window that shows a scroll-able display of the entire data set. Try this below, run `View(luquillo_stem_random)` to see the entire data set (it may not work here but it certainly works if you use RStudio).
 
 ```{r stem-4, exercise = TRUE, exercise.setup = "stem-count"}
 

@@ -63,16 +63,16 @@ This might sound like an inconvenience, but choosing which packages to load keep
 
 In the chunk below, load __fgeo.data__ (the package) and then open the help page for `luquillo_stem_random` (the data set). Be sure to read the help page before going on.
 
-```{r babynames-1, exercise = TRUE, exercise.setup = "bnames"}
+```{r stem-1, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
-```{r babynames-1-solution}
+```{r stem-1-solution}
 library(fgeo.data)
 ?luquillo_stem_random
 ```
 
-```{r bnames, echo = FALSE, message = FALSE}
+```{r stem-count, echo = FALSE, message = FALSE}
 library(fgeo.data)
 ```
 
@@ -127,11 +127,11 @@ You can transform a dataframe to a tibble with the `as_tibble()` function in the
 
 To see what I mean, use `library()` to load the __tibble__ package in the chunk below and then call `luquillo_stem_random`.
 
-```{r babynames-3, exercise = TRUE, exercise.setup = "bnames"}
+```{r stem-3, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
-```{r babynames-3-solution}
+```{r stem-3-solution}
 library(tibble)
 luquillo_stem_random
 ```
@@ -146,15 +146,15 @@ You do not need to worry much about tibbles in these tutorials; in future tutori
 
 What if you'd like to inspect the remaining portions of a tibble? To see the entire tibble, use the `View()` command. R will launch a window that shows a scroll-able display of the entire data set. Try this below, run `View(luquillo_stem_random)` to see the entire data set.
 
-```{r babynames-4, exercise = TRUE, exercise.setup = "bnames"}
+```{r stem-4, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
-```{r babynames-4-solution}
+```{r stem-4-solution}
 View(luquillo_stem_random)
 ```
 
-```{r babynames-4-check}
+```{r stem-4-check}
 "Good job! If you got an error message, it is only because the viewer is a work in progress for tutorials."
 ```
 
@@ -211,23 +211,23 @@ You can load the less commonly used tidyverse packages in the normal way, by run
 
 Let's give this a try. We will use the __ggplot2__ and __dplyr__ packages later in this tutorial. Let's use the __tidyverse__ package to load them in the chunk below:
 
-```{r babyname-5, exercise = TRUE, exercise.setup = "bnames"}
+```{r stem-5, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
-```{r babyname-5-solution}
+```{r stem-5-solution}
 library("tidyverse")
 ```
 
 ### Quiz
 
-```{r babynames-6, echo = FALSE}
+```{r stem-6, echo = FALSE}
 question('Which package is not loaded by `library("tidyverse")`',
   answer("ggplot2"),
   answer("dplyr"),
   answer("tibble"),
   answer(
-    "babynames", 
+    "luquillo_stem_random", 
     correct = TRUE, 
     message = "Now that you are familiar with the data set, and have loaded the necessary packages, let's explore the data."
   ),

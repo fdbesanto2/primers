@@ -57,15 +57,15 @@ The dataset `luquillo_tree5_random` comes in __fgeo.data__. `luquillo_tree5_rand
 
 To see the `luquillo_tree5_random` dataframe, type `luquillo_tree5_random` in the code block below and click "Submit Answer".
 
-```{r mpg0, exercise = TRUE}
+```{r tree, exercise = TRUE}
 luquillo_tree5_random
 ```
 
-```{r mpg0-solution}
+```{r tree-solution}
 luquillo_tree5_random
 ```
 
-```{r mpg0-check}
+```{r tree-check}
 "Good job!  We'll use interactive code chunks like this throughout these tutorials. Whenever you encounter one, you can click Submit Answer to run (or re-run) the code in the chunk. If there is a Solution button, you can click it to see the answer. Now let's use this data to make our first graph."
 ```
 

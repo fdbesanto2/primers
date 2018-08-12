@@ -29,6 +29,13 @@ tutorial_options(exercise.timelimit = 60, exercise.checker = checker)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+```{r stem-count}
+stem_count <- fgeo.data::luquillo_stem_random %>% 
+  filter(!is.na(dbh)) %>%
+  add_count(CensusID, sp) %>% 
+  select(CensusID, sp, n, everything())
+```
+
 ## Welcome
 
 In this case study, you will explore the abundance of tree-stems of different species over time. Along the way, you will master some of the most useful functions for isolating variables, cases, and values within a data frame:
@@ -46,16 +53,12 @@ Click the Next Topic button to begin.
 Consider the dataset `stem_count`, containing a count of alive stems of different species recorded in censuses 1-6 of the Luquillo plot, in Puerto Rico. (`stem_count` is based on a small, random subset of trees and therefore it is OK for examples but invalid for research.)
 
 ```{r, echo=FALSE}
-stem_count <- fgeo.data::luquillo_stem_random %>% 
-  filter(!is.na(dbh)) %>%
-  add_count(CensusID, sp) %>% 
-  select(CensusID, sp, n, everything())
 stem_count
 ```
 
 You can use the data in `stem_count` to make graphs like this, which reveal the history of stems of a particular species.
 
-```{r echo = FALSE, message = FALSE, warning = FALSE, out.width = "90%"}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "90%"}
 stem_count %>% 
   filter(sp == "PREMON") %>%
   ggplot(aes(CensusID, n)) + 
@@ -115,7 +118,7 @@ Each function takes a dataframe or tibble as it's first argument and returns a n
 
 Use the example below to get a feel for `select()`. Can you extract just the `CensusID` column? How about the `CensusID` and `sp` columns?
 
-```{r select-1, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "bnames"}
+```{r select-1, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "stem-count"}
 select(stem_count, CensusID)
 ```
 
@@ -128,7 +131,7 @@ select(stem_count, CensusID, sp)
 
 You can also use a series of helpers with `select()`. For example, if you place a minus sign before a column name, `select()` will return every column but that column. Can you predict how the minus sign will work here?
 
-```{r select-2, exercise = TRUE, exercise.setup = "bnames"}
+```{r select-2, exercise = TRUE, exercise.setup = "stem-count"}
 select(stem_count, -c(CensusID, sp))
 ```
 
@@ -192,7 +195,7 @@ See if you can use the logical operators to manipulate our code below to show:
 * All of the stems of the "CASARB" species.
 * All of the stems that have a missing value for `n` (Hint: this should return an empty data set).
 
-```{r filter-0, exercise = TRUE, exercise.setup = "bnames"}
+```{r filter-0, exercise = TRUE, exercise.setup = "stem-count"}
 filter(stem_count, sp == "PREMON")
 ```
 
@@ -210,7 +213,7 @@ When you use logical tests, be sure to look out for two common mistakes. One app
 filter(stem_count, sp = "PREMON")
 ```
 
-```{r filter-1a, exercise = TRUE, exercise.setup = "bnames"}
+```{r filter-1a, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -226,7 +229,7 @@ filter(stem_count, sp == "PREMON")
 filter(stem_count, sp == PREMON)
 ```
 
-```{r filter-1b, exercise = TRUE, exercise.setup = "bnames"}
+```{r filter-1b, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -277,7 +280,7 @@ Use Boolean operators to alter the code chunk below to return only the rows that
 * Stems from the fourth or sixth censuses of the PREMON species.
 * Stems which species are one of CORBOR, MICPRA, or EUGSTA.
 
-```{r filter-2, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "bnames"}
+```{r filter-2, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "stem-count"}
 filter(stem_count, sp == "PREMON" | sp == "CASARB")
 ```
 
@@ -295,7 +298,7 @@ Logical tests also invite two common mistakes that you should look out for. Each
 filter(stem_count, 100 < n < 200)
 ```
 
-```{r filter-3, exercise = TRUE, exercise.setup = "bnames"}
+```{r filter-3, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -311,7 +314,7 @@ filter(stem_count, 100 < n, n < 200)
 filter(stem_count, n == 50 | n == 60 | n == 70 | n == 80 | n == 90)
 ```
 
-```{r filter-4, exercise = TRUE, exercise.setup = "bnames"}
+```{r filter-4, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -339,7 +342,7 @@ When you combine multiple logical tests, be sure to look out for these two commo
 
 Use the code chunk below to arrange `stem_count` by `n`. Can you tell what the smallest value of `n` is? 
 
-```{r arrange-1, exercise = TRUE, exercise.setup = "bnames"}
+```{r arrange-1, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -383,7 +386,7 @@ Think you have it? Click Continue to test yourself.
 
 Which species was the most abundant for a single quadrat in a single census? In the code chunk below, use `arrange()` to make the row with the smallest `treeID` value and the largest value of `n` appear at the top of the data set.
 
-```{r arrange-4, exercise = TRUE, exercise.setup = "bnames"}
+```{r arrange-4, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -393,7 +396,7 @@ arrange(stem_count, treeID, desc(n))
 
 Now arrange `stem_count` so that the row with the largest value of `n` appears at the top of the dataframe. Will this be the same row? Why or why not?
 
-```{r arrange-5, exercise = TRUE, exercise.setup = "bnames"}
+```{r arrange-5, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -455,7 +458,7 @@ I'll use pipes for the remainder of the tutorial, and I will expect you to as we
 
 Try to write your pipe without copying and pasting the code from above.
 
-```{r pipe-1, exercise = TRUE, exercise.setup = "bnames"}
+```{r pipe-1, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 
@@ -476,7 +479,7 @@ You've now mastered a set of skills that will let you easily plot the different 
 
 Note that the first argument of `ggplot()` takes a data frame, which means you can add `ggplot()` directly to the end of a pipe. However, you will need to switch from `%>%` to `+` to finish adding layers to your plot.
 
-```{r your-name-1, exercise = TRUE, exercise.setup = "bnames"}
+```{r your-name-1, exercise = TRUE, exercise.setup = "stem-count"}
 
 ```
 

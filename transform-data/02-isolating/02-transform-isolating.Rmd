@@ -50,13 +50,13 @@ Click the Next Topic button to begin.
 
 ### The history of a species
 
-Consider the dataset `stem_count`, containing a count of alive stems of different species recorded in censuses 1-6 of the Luquillo plot, in Puerto Rico. (`stem_count` is based on a small, random subset of trees and therefore it is OK for examples but invalid for research.)
+Consider the dataset `stem_count`, containing a count of live stems of different species recorded in censuses 1-6 of the plot in Luquillo, Puerto Rico. (`stem_count` is based on a small, random subset of trees, so it is OK for examples but invalid for research.)
 
 ```{r, echo=FALSE}
 stem_count
 ```
 
-You can use the data in `stem_count` to make graphs like this, which reveal the history of stems of a particular species.
+You can use the data in `stem_count` to make similar graphs to reveal the history of stems of a particular species.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, out.width = "90%"}
 stem_count %>% 
@@ -66,11 +66,11 @@ stem_count %>%
   labs(title = "The history of PREMON")
 ```
 
-But before you do, you will need to trim down `stem_count`. At the moment, there are more rows in `stem_count` than you need to build your plot. 
+But before you create these graphs, you will need to trim down `stem_count`. Right now, there are more rows in `stem_count` than you need to build your plot. 
 
 ### An example
 
-To see what I mean, consider how I made the plot above: I began with the entire data set, which if plotted as a scatterplot would've looked like this.
+To see what I mean, consider how I made the plot above. I began with the entire data set. This is what it looks like if plotted as a scatterplot.
 
 ```{r out.width = "60%", cached = TRUE}
 stem_count %>% 
@@ -79,7 +79,7 @@ stem_count %>%
   labs(title = "The history of every species in the dataset")
 ```
 
-I then narrowed the data to just the rows that contain a single species, before plotting the data with a line geom. Here's how the rows with just one species look as a scatterplot.
+Then I narrowed the data to only include the rows that contain a single species, before plotting the data with a line geom.
 
 ```{r out.width = "60%", cached = TRUE}
 stem_count %>% 
@@ -89,7 +89,7 @@ stem_count %>%
   labs(title = "The history of PREMON")
 ```
 
-If I had skipped this step, my line graph would've connected all of the points in the large data set, creating an uninformative graph.
+If I skip this step, the resulting line graph connects all of the points in the large data set, which is uninformative.
 
 ```{r out.width = "60%", cached = TRUE}
 stem_count %>% 
@@ -104,17 +104,17 @@ Your goal in this section is to repeat this process for PREMON (or a species tha
 
 This type of task occurs often in Data Science: you need to extract data from a table before you can use it. You can do this task quickly with three functions that come in the **dplyr** package:
 
-1. **select()** - which extracts columns from a data frame.
-1. **filter()** - which extracts rows from a data frame.
-1. **arrange()** - which moves important rows to the top of a data frame.
+1. `select()` - which extracts columns from a data frame.
+1. `filter()` - which extracts rows from a data frame.
+1. `arrange()` - which moves important rows to the top of a data frame.
 
-Each function takes a dataframe or tibble as it's first argument and returns a new dataframe or tibble as its output. 
+Each function takes a dataframe or tibble as its first argument and returns a new dataframe or tibble as its output. 
 
-## select()
+## `select()`
 
-`select()` extracts columns of a data frame and returns the columns  as a new data frame. To use `select()`, pass it the name of a data frame to extract columns from, and then the names of the columns to extract. The column names do not need to appear in quotation marks or be prefixed with a `$`; `select()` knows to find them in the dataframe that you supply.
+`select()` extracts columns of a dataframe and returns the columns as a new dataframe. `select()` inputs the name of a dataframe to extract columns from, followed by the names of the columns to extract. The column names do not need to appear in quotation marks or be prefixed with a `$` (`select()` looks for those column names in the dataframe that you supply).
 
-### Exercise - select()
+### Exercise - `select()`
 
 Use the example below to get a feel for `select()`. Can you extract just the `CensusID` column? How about the `CensusID` and `sp` columns?
 
@@ -127,9 +127,9 @@ select(stem_count, CensusID)
 select(stem_count, CensusID, sp)
 ```
 
-### select() helpers
+### `select()` helpers
 
-You can also use a series of helpers with `select()`. For example, if you place a minus sign before a column name, `select()` will return every column but that column. Can you predict how the minus sign will work here?
+You can also use a series of helpers with `select()`. For example, you can subtract a column from your output by putting a minus sign (-) before the column name. `select()` will return every column except the one that you subtracted. Can you predict how the minus sign will work here?
 
 ```{r select-2, exercise = TRUE, exercise.setup = "stem-count"}
 select(stem_count, -c(CensusID, sp))
@@ -160,13 +160,13 @@ question(
 )
 ```
 
-## filter()
+## `filter()`
 
 `filter()` extracts rows from a dataframe and returns them as a new dataframe. As with `select()`, the first argument of `filter()` should be a dataframe to extract rows from. The arguments that follow should be logical tests; `filter()` will return every row for which the tests return `TRUE`.
 
-### filter in action
+### `filter()` in action
 
-For example, the code chunk below returns every row with the `sp` value "PREMON" in `stem_count`. 
+For example, this code returns every row with the `sp` value "PREMON" in `stem_count`. 
 
 ```{r echo = TRUE}
 filter(stem_count, sp == "PREMON")
@@ -174,7 +174,7 @@ filter(stem_count, sp == "PREMON")
 
 ### Logical tests
 
-To get the most from filter, you will need to know how to use R's logical test operators, which are summarised below.
+To get the most from `filter()`, you will need to know how to use R's logical test operators, which are summarised below.
 
 Logical operator | tests                                | Example
 ---------------- | ------------------------------------ | ---------
@@ -189,7 +189,7 @@ Logical operator | tests                                | Example
 
 ### Exercise - Logical Operators
 
-See if you can use the logical operators to manipulate our code below to show:
+See if you can use the logical operators to manipulate our code chunk below to show:
 
 * All stems in `stem_count` where n is greater than or equal to 230.
 * All of the stems of the "CASARB" species.
@@ -207,7 +207,7 @@ filter(stem_count, is.na(n))
 
 ### Two common mistakes
 
-When you use logical tests, be sure to look out for two common mistakes. One appears in each code chunk below. Can you find them? When you spot a mistake, fix it and then run the chunk to confirm that it works.
+When you use logical tests, avoid two common mistakes. One appears in each code chunk below. Can you find them? When you spot a mistake, fix it and then run the chunk to confirm that it works.
 
 ```{r eval = FALSE, echo = TRUE}
 filter(stem_count, sp = "PREMON")
@@ -243,7 +243,7 @@ filter(stem_count, sp == "PREMON")
 
 ### Two mistakes - Recap
 
-When you use logical tests, be sure to look out for these two common mistakes:
+When you use logical tests, avoid these two common mistakes:
 
 1. using `=` instead of `==` to test for equality.
 2. forgetting to use quotation marks when comparing strings, e.g. `sp == PREMON`, instead of `sp == "PREMON"` 
@@ -252,7 +252,7 @@ When you use logical tests, be sure to look out for these two common mistakes:
 
 If you provide more than one test to `filter()`, `filter()` will combine the tests with an **and** statement (`&`): it will only return the rows that satisfy all of the tests. 
 
-To combine multiple tests in a different way, use R's Boolean operators. For example, the code below will return all of the species encoded as PREMON or Sea or Anemone.
+To combine multiple tests in a different way, use R's Boolean operators. For example, the code chunk below will return all of the species encoded as PREMON or Sea or Anemone.
 
 ```{r echo = TRUE}
 filter(stem_count, sp == "PREMON" | sp == "CASARB")
@@ -260,7 +260,7 @@ filter(stem_count, sp == "PREMON" | sp == "CASARB")
 
 ### Boolean operators
 
-You can find a complete list or base R's boolean operators in the table below.
+This table shows a complete list of Boolean operators in base R.
 
 Boolean operator | represents                                 | Example
 ---------------- | ------------------------------------------ | ---------
@@ -290,9 +290,9 @@ filter(stem_count, CensusID == 4 | CensusID == 6, sp == "PREMON")
 filter(stem_count, sp %in% c("CORBOR", "MICPRA", "EUGSTA"))
 ```
 
-### Two more common mistakes
+### Two additional common mistakes
 
-Logical tests also invite two common mistakes that you should look out for. Each is displayed in a code chunk below, one produces an error and the other is needlessly verbose. Diagnose the chunks and then fix the code.
+Logical tests invite two additional common mistakes. Each is displayed in a code chunk below, one produces an error and the other is needlessly verbose. Diagnose the code then fix it.
 
 ```{r eval = FALSE, echo = TRUE}
 filter(stem_count, 100 < n < 200)
@@ -328,9 +328,9 @@ filter(stem_count, n %in% c(50, 60, 70, 80, 90))
 
 ### Two more common mistakes - Recap
 
-When you combine multiple logical tests, be sure to look out for these two common mistakes:
+When you combine multiple logical tests, avoid these two common mistakes:
 
-1. Collapsing multiple logical tests into a single test _without using a boolean operator_ 
+1. Collapsing multiple logical tests into a single test _without using a Boolean operator_ 
 1. Using repeated `|` instead of `%in%`, e.g. `x == 1 | x == 2 | x == 3` instead of `x %in% c(1, 2, 3)`
 
 
@@ -354,9 +354,9 @@ arrange(stem_count, n)
 "Good job!"
 ```
 
-### Tie breakers
+### Tiebreakers
 
-If you supply additional column names, `arrange()` will use them as tie breakers to order rows that have identical values in the earlier columns. Add to the code below, to make `sp` a tie breaker. The result should first order rows by value of `n` and then reorder rows within each value of `n` by values of `treeID`. 
+If you supply additional column names, `arrange()` will use them as tiebreakers to order rows that have identical values in the earlier columns. Add to the code chunk below to make `sp` a tiebreaker. The result should order rows first by value of `n`, then reorder rows within each value of `n` by values of `treeID`. 
 
 ```{r arrange-2, exercise = TRUE, exercise.eval = TRUE}
 arrange(stem_count, n)
@@ -370,7 +370,7 @@ arrange(stem_count, n, treeID)
 
 If you would rather arrange rows in the opposite order, i.e. from _large_ values to _small_ values, surround a column name with `desc()`. `arrange()` will reorder the rows based on the largest values to the smallest.
 
-Add a `desc()` to the code below to display the most abundant species for the latest census (the largest `CensusID` in the dataset) instead of the least abundant species.
+Add a `desc()` to the code chunk below to display the most abundant species for the latest census (the largest `CensusID` in the dataset) instead of the least abundant species.
 
 ```{r arrange-3, exercise = TRUE, exercise.eval = TRUE}
 arrange(stem_count, n, desc(treeID))
@@ -384,7 +384,7 @@ Think you have it? Click Continue to test yourself.
 
 ### arrange() quiz
 
-Which species was the most abundant for a single quadrat in a single census? In the code chunk below, use `arrange()` to make the row with the smallest `treeID` value and the largest value of `n` appear at the top of the data set.
+Which species is the most abundant for a single quadrat in a single census? In the code chunk below, use `arrange()` to move to the top of the data set the row with the smallest `treeID` value and the largest value of `n`.
 
 ```{r arrange-4, exercise = TRUE, exercise.setup = "stem-count"}
 
@@ -408,7 +408,7 @@ arrange(stem_count, desc(n))
 
 ### Steps
 
-Notice how each __dplyr__ function takes a dataframe as input and returns a dataframe as output. This makes the functions easy to use in a step by step fashion. For example, you could:
+Notice that each __dplyr__ function takes a dataframe as input and returns a dataframe as output. This makes the functions easy to use in a step by step fashion. For example, you could:
 
 1. Filter `stem_count` to just pick stems which `stemID` is "32585".
 2. Select the `CensusID`, `sp`, and `dbh` columns from the result.
@@ -423,9 +423,9 @@ id_32585
 
 ### Redundancy
 
-The result shows us the largest stem was recorded in the sixth census, which was the latest in this dataset. But take a look at the code. Do you notice how we re-create `id_32585` at each step so we will have something to pass to the next step? This is an inefficient way to write R code.
+The result shows that the largest stem was recorded in the sixth census, which was the latest in this dataset. But take a look at the code. Do you notice how we re-created `id_32585` at each step so we passed the updated data from one step to the next one? This is an inefficient way to write R code.
 
-You could avoid creating `id_32585` by nesting your functions inside of each other, but this creates code that is hard to read:
+You can avoid creating `id_32585` by nesting your functions inside of each other, but this creates code that is hard to read:
 
 ```{r echo = TRUE, eval = FALSE}
 arrange(select(filter(stem_count, stemID == "32585"), CensusID, sp, dbh), desc(dbh))
@@ -435,7 +435,7 @@ The __dplyr__ package provides a third way to write sequences of functions: the 
 
 ### %>%
 
-The pipe operator `%>%` performs an extremely simple task: it passes the result on its left into the first argument of the function on its right. Or put another way, `x %>% f(y)` is the same as `f(x, y)`. This piece of code punctuation makes it easy to write and read series of functions that are applied in a step by step way. For example, we can use the pipe to rewrite our code above:
+The pipe operator `%>%` performs an extremely simple task: it passes the result on its left into the first argument of the function on its right. Or put another way, `x %>% f(y)` is the same as `f(x, y)`. This code punctuation makes it easier to write and read series of functions that are applied in a step by step way. For example, we can use the pipe to rewrite our code above:
 
 ```{r echo = TRUE}
 stem_count %>% 
@@ -444,13 +444,13 @@ stem_count %>%
   arrange(desc(dbh))
 ```
 
-As you read the code, pronounce `%>%` as "then". You'll notice that __dplyr__ makes it easy to read pipes. Each function name is a verb, so our code resembles the statement, "Take `stem_count, _then_ filter it by `stemID`, _then_ select the `CensusID` and `dbh` columns, _then_ arrange the results by descending values of `dbh`."
+As you read the code, pronounce `%>%` as "then". You will notice that __dplyr__ makes it easier to read pipes. Each function name is a verb, so our code resembles the statement, "Take `stem_count, _then_ filter it by `stemID`, _then_ select the `CensusID` and `dbh` columns, _then_ arrange the results by descending values of `dbh`."
 
-__dplyr__ also makes it easy to write pipes. Each __dplyr__ function returns a dataframe that can be piped into another __dplyr__ function, which will accept the dataframe as its first argument. In fact, __dplyr__ functions are written with pipes in mind: each function does one simple task. __dplyr__ expects you to use pipes to combine these simple tasks to produce sophisticated results.
+__dplyr__ also makes it easier to write pipes. Each __dplyr__ function returns a dataframe that can be piped into another __dplyr__ function, which will accept the dataframe as its first argument. In fact, __dplyr__ functions are written with pipes in mind: each function does one simple task. __dplyr__ expects you to use pipes to combine these simple tasks to produce sophisticated results.
 
 ### Exercise - Pipes
 
-I'll use pipes for the remainder of the tutorial, and I will expect you to as well. Let's practice a little by writing a new pipe in the chunk below. The pipe should:
+I will use pipes for the remainder of the tutorial, and I will expect you to as well. Let's practice a little by writing a new pipe in the chunk below. The pipe should:
 
 1. Filter `stem_count` to just pick stems which `stemID` is _"138222"_.
 2. Select the `CensusID`, `sp`, and `dbh` columns from the result.
@@ -469,9 +469,9 @@ stem_count %>%
   arrange(desc(dbh))
 ```
 
-### Your name
+### Your turn
 
-You've now mastered a set of skills that will let you easily plot the different species over time. In the code chunk below, use a combination of __dplyr__ and __ggplot2__ functions with `%>%` to:
+You have now mastered a set of skills that will let you easily plot the different species over time. In the code chunk below, use a combination of __dplyr__ and __ggplot2__ functions with `%>%` to:
 
 1. Trim `stem_count` to just the rows that contain the PREMON species and your 
 2. Trim the result to just the columns that will appear in your graph (not strictly necessary, but useful practice)

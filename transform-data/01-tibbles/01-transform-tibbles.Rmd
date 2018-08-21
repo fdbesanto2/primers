@@ -37,9 +37,7 @@ In this primer, you will explore the abundance of different species of tree-stem
 
 These are some of the most useful R functions for data science, and the tutorials that follow will provide you everything you need to learn them. 
 
-In the tutorials, we'll use a dataset named `luquillo_stem_random`, which comes in the package __fgeo.data__. Within `luquillo_stem_random`, you will find information about a subset of randomly selected trees recorded in census 5 of the forest plot Luquillo, in Puerto Rico.
-
-This tutorial introduces `luquillo_stem_random` as well as a new data structure that makes working with data in R easy: the tibble.
+This tutorial introduces the dataset `luquillo_stem_random`, from the package __fgeo.data__, which is a subset of randomly selected trees from the forest plot Luquillo, in Puerto Rico. Here you will learn about a new data structure that makes working with data in R easy: the tibble.
 
 In addition to __fgeo.data__, this tutorial uses the [core tidyverse packages](http://tidyverse.org/), including __ggplot2__, __tibble__, and __dplyr__. All of these packages have been pre-installed for your convenience. But they haven't been pre-loaded---something you will soon learn more about!
 
